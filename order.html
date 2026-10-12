@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>お申し込み｜LUMEA SHIFT</title>
+<meta name="description" content="LUMEA SHIFT のお申し込みページ。定期便は初回¥1,980、回数縛りなし。">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F5F5F5">
+
+<!-- Favicon -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" sizes="96x96">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- 郵便番号 → 住所の自動入力 -->
+<script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8" defer></script>
+
+<style>
+/* =========================================================
+   Tokens（LPと共通）
+   ========================================================= */
+:root {
+  --primary: #EAE3D9;
+  --secondary: #F5F5F5;
+  --accent: #D4BFA3;
+  --accent-dark: #8a7a5f;
+  --text: #333333;
+  --text-sub: #666666;
+  --dark: #1a1a1a;
+  --border-warm: #C4B399;
+  --border-light: #E5DFD4;
+  --border-input: #d8cdbd;
+  --line-green: #06c755;
+  --error: #a4493a;
+  --error-bg: #fbf5f3;
+
+  --serif: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --sans: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --hairline: 0.5px;
+  --ease: 0.3s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--secondary);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 2;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, ul, ol, dl, dd, fieldset, legend { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+fieldset { border: 0; min-width: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { transition: opacity var(--ease); }
+a:hover, button:hover { opacity: 0.85; }
+:focus-visible { outline: 1px solid var(--accent-dark); outline-offset: 3px; }
+[hidden] { display: none !important; }
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+.site-header {
+  background: var(--secondary);
+  border-bottom: var(--hairline) solid var(--border-light);
+  padding-top: env(safe-area-inset-top);
+}
+.header-inner {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.back-link {
+  position: absolute;
+  left: 16px;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-sub);
+  text-decoration: none;
+}
+.logo {
+  font-family: var(--serif);
+  font-size: 10.5px;
+  letter-spacing: 0.45em;
+  margin-right: -0.45em;
+  text-decoration: none;
+  color: var(--text);
+}
+.secure-note {
+  position: absolute;
+  right: 16px;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.secure-note svg { width: 11px; height: 11px; }
+
+/* =========================================================
+   Layout
+   ========================================================= */
+main { padding: 40px 24px 80px; }
+.page-eyebrow {
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.4em;
+  line-height: 1.6;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 12px;
+}
+.page-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin-bottom: 28px;
+}
+.page-title:focus { outline: none; }
+
+/* ステップ表示 */
+.steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 40px;
+  counter-reset: step;
+}
+.steps li {
+  display: flex;
+  align-items: center;
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  color: #aaa;
+}
+.steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  font-family: var(--serif);
+  width: 22px; height: 22px;
+  border: var(--hairline) solid #bbb;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  margin-right: 8px;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.steps li + li { margin-left: 14px; }
+.steps li[aria-current="step"] { color: var(--text); }
+.steps li[aria-current="step"]::before { background: var(--dark); border-color: var(--dark); color: var(--secondary); }
+.steps li.done { color: var(--accent-dark); }
+.steps li.done::before { border-color: var(--accent-dark); }
+
+/* セクション */
+.form-section { margin-bottom: 44px; }
+.section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  border-bottom: var(--hairline) solid var(--border-warm);
+}
+.section-title .num {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--accent-dark);
+}
+
+/* =========================================================
+   Fields
+   ========================================================= */
+.field { margin-bottom: 22px; }
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.req, .opt {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+.req { color: var(--accent-dark); }
+.opt { color: #999; }
+.hint {
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: var(--text-sub);
+  margin-top: 6px;
+}
+.input,
+.select {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 16px; /* iOS のズーム防止 */
+  line-height: 1.5;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--border-input);
+  border-radius: 2px;
+  padding: 11px 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color var(--ease), background-color var(--ease);
+}
+.input::placeholder { color: #bbb; }
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--accent-dark);
+  box-shadow: 0 0 0 3px rgba(138,122,95,0.15);
+}
+.input[aria-invalid="true"],
+.select[aria-invalid="true"] {
+  border-color: var(--error);
+  background: var(--error-bg);
+}
+.select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23666' stroke-width='1'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 10px;
+  padding-right: 36px;
+}
+.input-short { max-width: 180px; }
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.sub-label {
+  display: block;
+  font-size: 10.5px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+.error-msg {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--error);
+  margin-top: 6px;
+}
+.error-msg:empty { display: none; }
+.error-msg::before { content: "! "; font-weight: 500; }
+
+.zip-row { display: flex; align-items: center; gap: 12px; }
+.zip-status { font-size: 10.5px; color: var(--accent-dark); }
+
+/* 選択カード（プラン・支払い方法） */
+.choices { display: grid; gap: 10px; }
+.choice { display: block; position: relative; cursor: pointer; }
+.choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px; height: 1px;
+}
+.choice-body {
+  display: block;
+  position: relative;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid var(--border-input);
+  border-radius: 2px;
+  padding: 16px 16px 16px 46px;
+  transition: border-color var(--ease), background-color var(--ease);
+}
+.choice-body::before {
+  content: "";
+  position: absolute;
+  left: 16px; top: 19px;
+  width: 16px; height: 16px;
+  border: 1px solid #aaa;
+  border-radius: 50%;
+  background: #fff;
+}
+.choice input:checked + .choice-body {
+  border-color: var(--dark);
+  background: #fff;
+}
+.choice input:checked + .choice-body::before {
+  border-color: var(--dark);
+  box-shadow: inset 0 0 0 4px #fff;
+  background: var(--dark);
+}
+.choice input:focus-visible + .choice-body {
+  outline: 1px solid var(--accent-dark);
+  outline-offset: 3px;
+}
+.choices[aria-invalid="true"] .choice-body { border-color: var(--error); }
+.choice-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+}
+.choice-price {
+  font-family: var(--serif);
+  font-size: 18px;
+  white-space: nowrap;
+}
+.choice-price s {
+  font-size: 11px;
+  color: #999;
+  margin-right: 6px;
+}
+.choice-detail {
+  display: block;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--text-sub);
+  margin-top: 4px;
+}
+.choice-meta {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--accent-dark);
+  margin-top: 6px;
+}
+.choice-sm .choice-body { padding-top: 13px; padding-bottom: 13px; }
+.choice-sm .choice-body::before { top: 17px; }
+.choice-sm .choice-title { font-family: var(--sans); font-size: 13px; letter-spacing: 0.04em; }
+.choice-sm .choice-fee { font-size: 11px; color: var(--text-sub); font-family: var(--sans); }
+
+/* チェックボックス */
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.8;
+  cursor: pointer;
+}
+.check input {
+  flex: none;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  margin: 2px 0 0;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.check input::after {
+  content: "";
+  width: 5px; height: 9px;
+  border: solid #fff;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+  opacity: 0;
+}
+.check input:checked { background: var(--dark); border-color: var(--dark); }
+.check input:checked::after { opacity: 1; }
+.check input[aria-invalid="true"] { border-color: var(--error); }
+.check + .check { margin-top: 10px; }
+
+/* クーポン */
+.coupon-row { display: flex; gap: 8px; }
+.coupon-row .input { flex: 1; text-transform: uppercase; }
+.btn-apply {
+  flex: none;
+  padding: 0 18px;
+  border: var(--hairline) solid var(--text);
+  font-size: 11.5px;
+  letter-spacing: 0.15em;
+}
+.coupon-ok { font-size: 11px; color: var(--accent-dark); margin-top: 6px; line-height: 1.6; }
+
+/* かんたん決済 */
+.express {
+  margin: -12px 0 44px;
+  text-align: center;
+}
+.express-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+.express .hint { margin: 0 0 14px; }
+.express-buttons { display: grid; gap: 10px; }
+/* 実運用では各社SDKの公式ボタンに置き換える（ガイドラインでデザインが決められているため） */
+.btn-express {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 0;
+  background: #fff;
+  border: 1px solid var(--border-input);
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  color: var(--text);
+}
+.btn-express small {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--text-sub);
+}
+.btn-express:disabled { opacity: 0.5; cursor: wait; }
+.or {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  color: var(--text-sub);
+}
+.or::before, .or::after {
+  content: "";
+  flex: 1;
+  height: var(--hairline);
+  background: var(--border-warm);
+}
+.express-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: var(--primary);
+  padding: 14px 16px;
+  margin-bottom: 32px;
+  font-size: 11.5px;
+  line-height: 1.8;
+}
+.express-banner button,
+.express-note button {
+  flex: none;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-sub);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.express-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--dark);
+  background: #fff;
+  padding: 14px 16px;
+  font-size: 13px;
+}
+.agree-box {
+  border-top: var(--hairline) solid var(--border-warm);
+  padding-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* 定期便の条件 */
+.terms-box {
+  background: var(--primary);
+  padding: 20px 18px;
+  margin-bottom: 20px;
+}
+.terms-box h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 13.5px;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.terms-box li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 11.5px;
+  line-height: 1.9;
+  color: var(--text);
+}
+.terms-box li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.85em;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent-dark);
+}
+
+/* =========================================================
+   Summary
+   ========================================================= */
+.summary {
+  border: var(--hairline) solid var(--border-warm);
+  padding: 22px 20px;
+  margin-bottom: 24px;
+  background: #fff;
+}
+.summary-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.sum-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  line-height: 2;
+  color: var(--text-sub);
+}
+.sum-row dd { font-family: var(--serif); color: var(--text); white-space: nowrap; }
+.sum-row.discount dd { color: var(--accent-dark); }
+.sum-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: var(--hairline) solid var(--border-warm);
+}
+.sum-total dt { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; }
+.sum-total dd { font-family: var(--serif); font-size: 26px; line-height: 1.2; }
+.sum-total .tax { font-size: 10px; color: var(--text-sub); margin-left: 3px; font-family: var(--sans); }
+.sum-next {
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--text-sub);
+}
+.summary-empty { font-size: 11.5px; color: var(--text-sub); }
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+.btn-main,
+.btn-sub {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: var(--sans);
+  line-height: 1.6;
+  text-decoration: none;
+}
+.btn-main {
+  background: var(--dark);
+  color: var(--secondary);
+  padding: 19px 0;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+}
+.btn-main:disabled { opacity: 0.5; cursor: wait; }
+.btn-sub {
+  margin-top: 14px;
+  padding: 14px 0;
+  border: var(--hairline) solid var(--text);
+  font-size: 11.5px;
+  letter-spacing: 0.2em;
+}
+.btn-line {
+  display: block;
+  margin-top: 14px;
+  padding: 14px 0;
+  text-align: center;
+  font-size: 11.5px;
+  letter-spacing: 0.15em;
+  line-height: 1.6;
+  border: var(--hairline) solid var(--text);
+  text-decoration: none;
+}
+.line-tag {
+  display: inline-block;
+  background: var(--line-green);
+  color: #fff;
+  font-weight: 500;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 3px 5px;
+  margin-right: 8px;
+  border-radius: 2px;
+  vertical-align: 1px;
+}
+.submit-note {
+  font-size: 10.5px;
+  line-height: 1.8;
+  color: var(--text-sub);
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* エラーまとめ */
+.alert {
+  border: 1px solid var(--error);
+  background: var(--error-bg);
+  color: var(--error);
+  padding: 14px 16px;
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+
+/* =========================================================
+   Confirm
+   ========================================================= */
+.confirm-block { margin-bottom: 32px; }
+.confirm-block h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  padding-bottom: 10px;
+  border-bottom: var(--hairline) solid var(--border-warm);
+}
+.edit-link {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-sub);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.confirm-list div {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: var(--hairline) solid var(--border-light);
+}
+.confirm-list dt { font-size: 11px; color: var(--text-sub); line-height: 1.8; }
+.confirm-list dd { font-size: 12.5px; line-height: 1.8; overflow-wrap: anywhere; }
+.confirm-list .strong { font-family: var(--serif); font-size: 16px; }
+
+/* =========================================================
+   Complete
+   ========================================================= */
+.complete { text-align: center; }
+.complete-mark {
+  width: 56px; height: 56px;
+  margin: 0 auto 24px;
+  border: var(--hairline) solid var(--accent-dark);
+  border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--accent-dark);
+}
+.complete-mark svg { width: 22px; height: 22px; }
+.complete-lead { font-size: 12.5px; line-height: 2.1; color: var(--text-sub); margin-bottom: 28px; }
+.order-id {
+  background: var(--primary);
+  padding: 18px;
+  margin-bottom: 28px;
+}
+.order-id dt { font-size: 10.5px; letter-spacing: 0.25em; color: var(--accent-dark); }
+.order-id dd { font-family: var(--serif); font-size: 18px; letter-spacing: 0.1em; }
+.next-box {
+  text-align: left;
+  border-top: var(--hairline) solid var(--border-warm);
+  padding-top: 24px;
+  margin-top: 36px;
+}
+.next-box h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.site-footer {
+  text-align: center;
+  padding: 32px 24px 40px;
+  border-top: var(--hairline) solid var(--border-light);
+}
+.site-footer p { font-size: 10px; line-height: 1.9; color: var(--text-sub); }
+.site-footer .copyright { margin-top: 12px; font-size: 9.5px; letter-spacing: 0.2em; color: #999; }
+
+/* =========================================================
+   PC
+   ========================================================= */
+@media (min-width: 1024px) {
+  body { background: var(--primary); }
+  .site-header, main, .site-footer {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--secondary);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="lumea-shift-lp.html" class="back-link">戻る</a>
+    <a href="lumea-shift-lp.html" class="logo" aria-label="LUMEA SHIFT トップへ">LUMEA SHIFT</a>
+    <span class="secure-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      SSL
+    </span>
+  </div>
+</header>
+
+<main>
+  <p class="page-eyebrow">ORDER</p>
+  <h1 class="page-title" id="pageTitle" tabindex="-1">お申し込み</h1>
+
+  <ol class="steps" aria-label="お申し込みの手順">
+    <li data-step="1" aria-current="step">入力</li>
+    <li data-step="2">確認</li>
+    <li data-step="3">完了</li>
+  </ol>
+
+  <!-- =====================================================
+       STEP 1：入力
+       ===================================================== -->
+  <section id="stepInput" aria-labelledby="pageTitle">
+    <div class="alert" id="errorSummary" role="alert" hidden></div>
+
+    <form id="orderForm" class="h-adr" novalidate>
+      <span class="p-country-name" hidden>Japan</span>
+
+      <!-- スパム対策（人には見えない項目。入力があれば送信しない） -->
+      <div class="visually-hidden" aria-hidden="true">
+        <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <!-- 01 プラン -->
+      <fieldset class="form-section">
+        <legend class="section-title"><span class="num">01</span>ご購入プラン</legend>
+
+        <div class="choices" id="planGroup" role="radiogroup" aria-describedby="err-plan">
+          <label class="choice">
+            <input type="radio" name="plan" value="subscription">
+            <span class="choice-body">
+              <span class="choice-title">
+                定期便
+                <span class="choice-price"><s>¥3,980</s>¥1,980</span>
+              </span>
+              <span class="choice-detail">初回のお届け後、約1ヶ月ごとにお届けします。<br>2回目以降 ¥3,480（税込）</span>
+              <span class="choice-meta">回数縛りなし / 次回お届けの5日前まで解約OK</span>
+            </span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="plan" value="single">
+            <span class="choice-body">
+              <span class="choice-title">
+                単品購入
+                <span class="choice-price">¥3,980</span>
+              </span>
+              <span class="choice-detail">1本だけのお届けです。</span>
+              <span class="choice-meta">1回のみ / 自動更新なし</span>
+            </span>
+          </label>
+        </div>
+        <p class="hint">朝夜兼用オールインワン美容液 50mL × 1本（約1ヶ月分）</p>
+        <p class="error-msg" id="err-plan"></p>
+      </fieldset>
+
+      <!-- かんたん決済（Amazon Pay / 楽天ペイ は登録済みの住所・支払い方法を使える） -->
+      <section class="express" id="expressBlock" aria-labelledby="expressTitle">
+        <p class="express-title" id="expressTitle">かんたん決済</p>
+        <p class="hint">登録済みのお届け先とお支払い方法を使うので、入力を省略できます。</p>
+        <div class="express-buttons">
+          <button type="button" class="btn-express" data-express="amazonpay">Amazon Pay<small>で申し込む</small></button>
+          <button type="button" class="btn-express" data-express="rakutenpay">楽天ペイ<small>で申し込む</small></button>
+        </div>
+        <p class="or">または、フォームで入力</p>
+      </section>
+
+      <div class="express-banner" id="expressBanner" hidden>
+        <span id="expressBannerText"></span>
+        <button type="button" data-express-clear>解除する</button>
+      </div>
+
+      <!-- 02 お客様情報 -->
+      <fieldset class="form-section">
+        <legend class="section-title"><span class="num">02</span>お客様情報</legend>
+
+        <div class="field">
+          <p class="field-label" id="lbl-name">お名前 <span class="req">必須</span></p>
+          <div class="grid-2">
+            <div>
+              <label class="sub-label" for="lastName">姓</label>
+              <input class="input" type="text" id="lastName" name="lastName" autocomplete="family-name" placeholder="佐藤" aria-describedby="err-lastName">
+              <p class="error-msg" id="err-lastName"></p>
+            </div>
+            <div>
+              <label class="sub-label" for="firstName">名</label>
+              <input class="input" type="text" id="firstName" name="firstName" autocomplete="given-name" placeholder="美咲" aria-describedby="err-firstName">
+              <p class="error-msg" id="err-firstName"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <p class="field-label">フリガナ <span class="req" id="kanaReq">必須</span></p>
+          <div class="grid-2">
+            <div>
+              <label class="sub-label" for="lastKana">セイ</label>
+              <input class="input" type="text" id="lastKana" name="lastKana" placeholder="サトウ" aria-describedby="err-lastKana">
+              <p class="error-msg" id="err-lastKana"></p>
+            </div>
+            <div>
+              <label class="sub-label" for="firstKana">メイ</label>
+              <input class="input" type="text" id="firstKana" name="firstKana" placeholder="ミサキ" aria-describedby="err-firstKana">
+              <p class="error-msg" id="err-firstKana"></p>
+            </div>
+          </div>
+          <p class="hint">ひらがなで入力しても、カタカナに変換されます。</p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="email">メールアドレス <span class="req">必須</span></label>
+          <input class="input" type="email" id="email" name="email" autocomplete="email" inputmode="email" placeholder="example@mail.com" aria-describedby="hint-email err-email">
+          <p class="hint" id="hint-email">ご注文確認メールをお送りします。</p>
+          <p class="error-msg" id="err-email"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="emailConfirm">メールアドレス（確認用） <span class="req">必須</span></label>
+          <input class="input" type="email" id="emailConfirm" name="emailConfirm" autocomplete="email" inputmode="email" aria-describedby="err-emailConfirm">
+          <p class="error-msg" id="err-emailConfirm"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="tel">電話番号 <span class="req">必須</span></label>
+          <input class="input" type="tel" id="tel" name="tel" autocomplete="tel" inputmode="tel" placeholder="09012345678" aria-describedby="hint-tel err-tel">
+          <p class="hint" id="hint-tel">配送時の連絡に使用します。ハイフンなしで入力してください。</p>
+          <p class="error-msg" id="err-tel"></p>
+        </div>
+      </fieldset>
+
+      <!-- 03 お届け先 -->
+      <fieldset class="form-section">
+        <legend class="section-title"><span class="num">03</span>お届け先</legend>
+
+        <div class="field">
+          <label class="field-label" for="zip">郵便番号 <span class="req">必須</span></label>
+          <div class="zip-row">
+            <input class="input input-short p-postal-code" type="text" id="zip" name="zip" autocomplete="postal-code" inputmode="numeric" maxlength="8" placeholder="1500001" aria-describedby="hint-zip err-zip">
+            <span class="zip-status" id="zipStatus" aria-live="polite"></span>
+          </div>
+          <p class="hint" id="hint-zip">7桁の数字を入れると、住所が自動で入ります。</p>
+          <p class="error-msg" id="err-zip"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="pref">都道府県 <span class="req">必須</span></label>
+          <select class="select p-region" id="pref" name="pref" autocomplete="address-level1" aria-describedby="err-pref">
+            <option value="">選択してください</option>
+          </select>
+          <p class="error-msg" id="err-pref"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="address1">市区町村・番地 <span class="req">必須</span></label>
+          <input class="input p-locality p-street-address" type="text" id="address1" name="address1" autocomplete="address-line1" placeholder="渋谷区神宮前3-10-5" aria-describedby="err-address1">
+          <p class="error-msg" id="err-address1"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="address2">建物名・部屋番号 <span class="opt">任意</span></label>
+          <input class="input p-extended-address" type="text" id="address2" name="address2" autocomplete="address-line2" placeholder="LUMEAハイツ 201">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="deliveryTime">お届け時間帯 <span class="opt">任意</span></label>
+          <select class="select" id="deliveryTime" name="deliveryTime">
+            <option value="指定なし">指定なし</option>
+            <option value="午前中">午前中</option>
+            <option value="14〜16時">14〜16時</option>
+            <option value="16〜18時">16〜18時</option>
+            <option value="18〜20時">18〜20時</option>
+            <option value="19〜21時">19〜21時</option>
+          </select>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" name="okihai" value="希望する">
+          <span>不在時は置き配を希望する（玄関前）</span>
+        </label>
+      </fieldset>
+
+      <!-- 04 お支払い -->
+      <fieldset class="form-section">
+        <legend class="section-title"><span class="num">04</span>お支払い方法</legend>
+
+        <div class="express-note" id="expressNote" hidden>
+          <span id="expressNoteText"></span>
+          <button type="button" data-express-clear>ほかの方法にする</button>
+        </div>
+
+        <div class="choices" id="paymentGroup" role="radiogroup" aria-describedby="err-payment">
+          <label class="choice choice-sm">
+            <input type="radio" name="payment" value="card">
+            <span class="choice-body">
+              <span class="choice-title">クレジットカード <span class="choice-fee">手数料無料</span></span>
+              <span class="choice-detail">Apple Pay・Google Pay も使えます。お申し込み後、決済ページでお支払いください。</span>
+            </span>
+          </label>
+          <label class="choice choice-sm">
+            <input type="radio" name="payment" value="paypay">
+            <span class="choice-body">
+              <span class="choice-title">PayPay <span class="choice-fee">手数料無料</span></span>
+              <span class="choice-detail">お申し込み後、PayPayアプリで支払いを承認します。</span>
+            </span>
+          </label>
+          <label class="choice choice-sm">
+            <input type="radio" name="payment" value="deferred">
+            <span class="choice-body">
+              <span class="choice-title">後払い（コンビニ・銀行） <span class="choice-fee">手数料無料</span></span>
+              <span class="choice-detail">商品に同封の請求書で、到着後14日以内にお支払いください。</span>
+            </span>
+          </label>
+          <label class="choice choice-sm">
+            <input type="radio" name="payment" value="cod">
+            <span class="choice-body">
+              <span class="choice-title">代金引換 <span class="choice-fee">手数料 ¥330</span></span>
+              <span class="choice-detail">商品のお受け取り時に、配達員へお支払いください。</span>
+            </span>
+          </label>
+        </div>
+        <p class="error-msg" id="err-payment"></p>
+
+        <div class="field" style="margin-top: 28px;">
+          <label class="field-label" for="coupon">クーポンコード <span class="opt">任意</span></label>
+          <div class="coupon-row">
+            <input class="input" type="text" id="coupon" name="coupon" autocomplete="off" placeholder="LINEで受け取ったコード" aria-describedby="err-coupon coupon-ok">
+            <button type="button" class="btn-apply" id="applyCoupon">適用</button>
+          </div>
+          <p class="coupon-ok" id="coupon-ok" aria-live="polite"></p>
+          <p class="error-msg" id="err-coupon"></p>
+        </div>
+      </fieldset>
+
+      <!-- 05 確認事項 -->
+      <fieldset class="form-section">
+        <legend class="section-title"><span class="num">05</span>定期便・お知らせ</legend>
+
+        <div class="terms-box" id="subscriptionTerms">
+          <h3>定期便について</h3>
+          <ul>
+            <li>初回 ¥1,980、2回目以降は約1ヶ月ごとに ¥3,480（税込）でお届けします。</li>
+            <li>回数の縛りはありません。初回のお届け後に解約することもできます。</li>
+            <li>解約・お休みは、次回お届け予定日の5日前までに、マイページ・LINE・お問い合わせフォームから受け付けます。</li>
+          </ul>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" name="newsletter" value="希望する">
+          <span>新商品やお得な情報をメールで受け取る</span>
+        </label>
+      </fieldset>
+
+      <!-- 合計 -->
+      <div class="summary" aria-live="polite">
+        <p class="summary-title">お支払い金額</p>
+        <div id="summaryBody">
+          <p class="summary-empty">プランを選ぶと、金額が表示されます。</p>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-main">入力内容を確認する</button>
+      <p class="submit-note">まだ申し込みは確定しません。</p>
+    </form>
+  </section>
+
+  <!-- =====================================================
+       STEP 2：確認
+       ===================================================== -->
+  <section id="stepConfirm" hidden>
+    <p class="complete-lead" style="text-align:center;">内容をご確認のうえ、<br>「この内容で申し込む」を押してください。</p>
+
+    <div class="confirm-block">
+      <h2>ご注文内容 <a href="#" class="edit-link" data-edit="planGroup">変更</a></h2>
+      <dl class="confirm-list" id="confirmOrder"></dl>
+    </div>
+
+    <div class="confirm-block">
+      <h2>お客様情報・お届け先 <a href="#" class="edit-link" data-edit="lastName">変更</a></h2>
+      <dl class="confirm-list" id="confirmCustomer"></dl>
+    </div>
+
+    <div class="confirm-block">
+      <h2>お支払い・お届けについて</h2>
+      <dl class="confirm-list" id="confirmTerms"></dl>
+    </div>
+
+    <div class="agree-box">
+      <label class="check">
+        <input type="checkbox" id="agree" aria-describedby="err-agree">
+        <span><a href="terms.html" target="_blank" rel="noopener">利用規約</a>・<a href="privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>、上記のご注文内容とお支払い・解約の条件に同意する <span class="req">必須</span></span>
+      </label>
+      <p class="error-msg" id="err-agree"></p>
+    </div>
+
+    <div class="alert" id="sendError" role="alert" hidden></div>
+
+    <button type="button" class="btn-main" id="submitOrder">この内容で申し込む</button>
+    <button type="button" class="btn-sub" id="backToInput">入力画面に戻る</button>
+  </section>
+
+  <!-- =====================================================
+       STEP 3：完了
+       ===================================================== -->
+  <section id="stepComplete" class="complete" hidden>
+    <div class="complete-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+    </div>
+    <p class="complete-lead">
+      お申し込みを受け付けました。<br>
+      <span id="completeEmail"></span> に<br>確認メールをお送りしています。
+    </p>
+
+    <dl class="order-id">
+      <dt>ご注文番号</dt>
+      <dd id="orderIdText"></dd>
+    </dl>
+
+    <!-- カード・PayPay のみ表示。実運用では決済代行会社の決済ページ（またはPayPayアプリ）へ移動させる -->
+    <div id="payNext" hidden>
+      <a href="#" class="btn-main" id="payNextLink"></a>
+      <p class="submit-note">お支払いが完了すると、ご注文が確定します。</p>
+    </div>
+
+    <div class="next-box">
+      <h2>届くまでのあいだに</h2>
+      <p class="complete-lead" style="margin-bottom:0;">使い方や、続けるためのちょっとしたコツをLINEでお届けしています。</p>
+      <a href="lumea-shift-lp.html#line" class="btn-line"><span class="line-tag">LINE</span>続けるコツを受け取る</a>
+      <a href="lumea-shift-lp.html" class="btn-sub">トップへ戻る</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>LUMEA BEAUTY株式会社 / support@lumea-beauty.jp<br>平日 10:00〜18:00（土日祝休み）</p>
+  <p><a href="terms.html">利用規約</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
+  <p class="copyright">© LUMEA BEAUTY, INC.</p>
+</footer>
+
+<script>
+/* =========================================================
+   設定
+   ========================================================= */
+// Google Apps Script をデプロイしたウェブアプリのURL。
+// 空のままだとデモモード（送信せずに完了画面を表示）で動きます。
+const GAS_URL = '';
+
+// LINE友だち追加URL（LP側と同じものを設定）
+const LINE_URL = '';
+
+// 金額はGAS側でも同じ設定で再計算します（改ざん対策）。変更時は両方を更新。
+const PLANS = {
+  subscription: { label: '定期便', price: 1980, listPrice: 3980, nextPrice: 3480, shipping: 0, nextShipping: 0 },
+  single:       { label: '単品購入', price: 3980, listPrice: 3980, nextPrice: null, shipping: 0, nextShipping: null },
+};
+const PAYMENTS = {
+  card:       { label: 'クレジットカード', fee: 0, timing: 'お申し込み後、決済ページでお支払い', next: 'カード決済に進む' },
+  paypay:     { label: 'PayPay', fee: 0, timing: 'お申し込み後、PayPayアプリで承認', next: 'PayPayで支払う' },
+  amazonpay:  { label: 'Amazon Pay', fee: 0, timing: 'お申し込み確定時（Amazonアカウントに登録のお支払い方法）', express: true },
+  rakutenpay: { label: '楽天ペイ', fee: 0, timing: 'お申し込み確定時（楽天ペイに登録のお支払い方法・ポイント）', express: true },
+  deferred:   { label: '後払い（コンビニ・銀行）', fee: 0, timing: '商品到着後14日以内' },
+  cod:        { label: '代金引換', fee: 330, timing: '商品のお受け取り時' },
+};
+
+// かんたん決済のデモ用データ（実運用では各社APIから受け取る）
+// Amazon Pay はフリガナを返さないため、かんたん決済ではフリガナを任意にしている
+const EXPRESS_DEMO = {
+  amazonpay: {
+    source: 'Amazonアカウント',
+    lastName: '山田', firstName: 'さくら', lastKana: '', firstKana: '',
+    email: 'sakura.yamada@example.com', tel: '08011112222',
+    zip: '1500001', pref: '東京都', address1: '渋谷区神宮前1-2-3', address2: 'グリーンハイツ 302',
+  },
+  rakutenpay: {
+    source: '楽天会員情報',
+    lastName: '鈴木', firstName: '花子', lastKana: 'スズキ', firstKana: 'ハナコ',
+    email: 'hanako.suzuki@example.com', tel: '09033334444',
+    zip: '1500001', pref: '東京都', address1: '渋谷区神宮前4-5-6', address2: '',
+  },
+};
+const COUPONS = { LINE500: 500 };
+
+const PREFS = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+
+/* 流入元：このページのURLパラメータ → LPで保存した値の順に使う */
+function getSource() {
+  try {
+    const params = new URLSearchParams(location.search);
+    const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+    const src = {};
+    keys.forEach((k) => { if (params.get(k)) src[k] = params.get(k); });
+    if (Object.keys(src).length) return src;
+    return JSON.parse(sessionStorage.getItem('lumea_source') || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+function sourceText() {
+  const s = getSource();
+  const main = [s.utm_source, s.utm_medium, s.utm_campaign, s.utm_content].filter(Boolean).join(' / ');
+  return main || (s.referrer ? 'referrer: ' + s.referrer : '直接アクセス');
+}
+
+/* =========================================================
+   ユーティリティ
+   ========================================================= */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const yen = (n) => '¥' + n.toLocaleString('ja-JP');
+const toHalf = (s) => s
+  .replace(/[０-９Ａ-Ｚａ-ｚ＠．＿－]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+const onlyDigits = (s) => toHalf(s).replace(/\D/g, '');
+const hiraToKata = (s) => s.replace(/[\u3041-\u3096]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60));
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+const form = $('#orderForm');
+const steps = { 1: $('#stepInput'), 2: $('#stepConfirm'), 3: $('#stepComplete') };
+let appliedCoupon = '';
+let express = null; // 'amazonpay' | 'rakutenpay' | null
+const currentPayment = () => express || form.payment.value;
+let isDirty = false;
+let isSubmitted = false;
+
+// 都道府県の選択肢
+$('#pref').insertAdjacentHTML('beforeend', PREFS.map((p) => `<option value="${p}">${p}</option>`).join(''));
+
+// URLパラメータでプランを初期選択（LPのボタンから ?plan=subscription / ?plan=single）
+const initialPlan = new URLSearchParams(location.search).get('plan');
+if (PLANS[initialPlan]) form.plan.value = initialPlan;
+
+/* =========================================================
+   入力値の整形（フォーカスが外れたとき）
+   ========================================================= */
+const normalizers = {
+  lastName: (v) => v.trim(),
+  firstName: (v) => v.trim(),
+  lastKana: (v) => hiraToKata(v.trim()),
+  firstKana: (v) => hiraToKata(v.trim()),
+  email: (v) => toHalf(v).trim(),
+  emailConfirm: (v) => toHalf(v).trim(),
+  tel: (v) => onlyDigits(v),
+  zip: (v) => onlyDigits(v),
+  address1: (v) => v.trim(),
+  address2: (v) => v.trim(),
+  coupon: (v) => toHalf(v).trim().toUpperCase(),
+};
+
+/* =========================================================
+   バリデーション
+   ========================================================= */
+const KANA = /^[\u30A1-\u30FCー\s　]+$/;
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const rules = {
+  plan: (v) => (v ? '' : 'プランを選択してください。'),
+  lastName: (v) => (v ? '' : '姓を入力してください。'),
+  firstName: (v) => (v ? '' : '名を入力してください。'),
+  lastKana: (v) => (!v ? (express ? '' : 'セイを入力してください。') : KANA.test(v) ? '' : 'カタカナで入力してください。'),
+  firstKana: (v) => (!v ? (express ? '' : 'メイを入力してください。') : KANA.test(v) ? '' : 'カタカナで入力してください。'),
+  email: (v) => (!v ? 'メールアドレスを入力してください。' : EMAIL.test(v) ? '' : 'メールアドレスの形式をご確認ください（例：example@mail.com）。'),
+  emailConfirm: (v) => (!v ? '確認のため、もう一度入力してください。' : v === form.email.value.trim() ? '' : '上のメールアドレスと一致しません。'),
+  tel: (v) => (!v ? '電話番号を入力してください。' : /^0\d{9,10}$/.test(v) ? '' : '0から始まる10〜11桁の数字で入力してください。'),
+  zip: (v) => (!v ? '郵便番号を入力してください。' : /^\d{7}$/.test(v) ? '' : '7桁の数字で入力してください。'),
+  pref: (v) => (v ? '' : '都道府県を選択してください。'),
+  address1: (v) => (v ? '' : '市区町村・番地を入力してください。'),
+  payment: (v) => (express || v ? '' : 'お支払い方法を選択してください。'),
+  coupon: (v) => (!v || COUPONS[v] ? '' : 'このクーポンコードは使用できません。コードをご確認ください。'),
+};
+const agreeRule = () => ($('#agree').checked ? '' : 'お申し込みには、内容への同意が必要です。');
+
+function fieldValue(name) {
+  const el = form.elements[name];
+  if (!el) return '';
+  if (el instanceof RadioNodeList) return el.value;
+  return el.value.trim();
+}
+
+function setError(name, message) {
+  const target = name === 'plan' ? $('#planGroup') : name === 'payment' ? $('#paymentGroup') : (form.elements[name] || document.getElementById(name));
+  const errEl = $('#err-' + name);
+  if (target) target.setAttribute('aria-invalid', message ? 'true' : 'false');
+  if (errEl) errEl.textContent = message;
+}
+
+function validate(name) {
+  const message = rules[name] ? rules[name](fieldValue(name)) : '';
+  setError(name, message);
+  return !message;
+}
+
+function validateAll() {
+  return Object.keys(rules).filter((name) => !validate(name));
+}
+
+// フォーカスが外れたら整形してチェック。エラー表示中は入力のたびに再チェック
+form.addEventListener('focusout', (e) => {
+  const { name } = e.target;
+  if (!name || e.target.type === 'radio' || e.target.type === 'checkbox') return;
+  if (normalizers[name]) e.target.value = normalizers[name](e.target.value);
+  if (name === 'coupon') return; // クーポンは「適用」ボタンで判定
+  if (e.target.value || e.target.getAttribute('aria-invalid') === 'true') validate(name);
+  if (name === 'email' && form.emailConfirm.value) validate('emailConfirm');
+});
+
+form.addEventListener('input', (e) => {
+  isDirty = true;
+  const { name } = e.target;
+  if (name && e.target.getAttribute('aria-invalid') === 'true') validate(name);
+  if (name === 'coupon' && appliedCoupon) { appliedCoupon = ''; $('#coupon-ok').textContent = ''; updateSummary(); }
+});
+
+form.addEventListener('change', (e) => {
+  const { name } = e.target;
+  if (['plan', 'payment', 'pref'].includes(name)) validate(name);
+  if (['plan', 'payment'].includes(name)) updateSummary();
+});
+
+/* =========================================================
+   郵便番号 → 住所（YubinBango が値を入れたあとにチェックを更新）
+   ========================================================= */
+form.zip.addEventListener('input', () => {
+  const digits = onlyDigits(form.zip.value);
+  $('#zipStatus').textContent = digits.length === 7 ? '住所を検索しています…' : '';
+  if (digits.length !== 7) return;
+  setTimeout(() => {
+    const found = form.pref.value !== '';
+    $('#zipStatus').textContent = found ? '住所を入力しました' : '';
+    if (found) { validate('pref'); if (form.address1.value) validate('address1'); }
+  }, 900);
+});
+
+/* =========================================================
+   かんたん決済
+   ========================================================= */
+const EXPRESS_FIELDS = ['lastName', 'firstName', 'lastKana', 'firstKana', 'email', 'tel', 'zip', 'pref', 'address1', 'address2'];
+
+function setExpress(method) {
+  express = method;
+  const on = Boolean(method);
+  const label = on ? PAYMENTS[method].label : '';
+  $('#expressBanner').hidden = !on;
+  $('#expressNote').hidden = !on;
+  $('#paymentGroup').hidden = on;
+  $('#kanaReq').textContent = on ? '任意' : '必須';
+  $('#kanaReq').className = on ? 'opt' : 'req';
+  if (on) {
+    $('#expressBannerText').textContent = `${EXPRESS_DEMO[method].source}のお届け先・お支払い方法を使っています（${label}）`;
+    $('#expressNoteText').textContent = `${label}でお支払い`;
+    form.emailConfirm.value = form.email.value;
+    setError('payment', '');
+  }
+  ['lastKana', 'firstKana'].forEach((n) => { if (form.elements[n].getAttribute('aria-invalid') === 'true') validate(n); });
+  updateSummary();
+}
+
+$$('[data-express]').forEach((btn) => btn.addEventListener('click', async () => {
+  // 金額を決めるため、先にプランの選択が必要
+  if (!validate('plan')) {
+    $('#planGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    form.plan[0].focus({ preventScroll: true });
+    return;
+  }
+  const method = btn.dataset.express;
+  const original = btn.innerHTML;
+  $$('[data-express]').forEach((b) => { b.disabled = true; });
+  btn.textContent = `${PAYMENTS[method].label}に接続しています…`;
+
+  // デモ：実運用ではここで各社の画面に移動し、戻ってきたときに住所・支払い情報を受け取る
+  await new Promise((r) => setTimeout(r, 900));
+
+  const profile = EXPRESS_DEMO[method];
+  EXPRESS_FIELDS.forEach((n) => { form.elements[n].value = profile[n]; setError(n, ''); });
+  form.emailConfirm.value = profile.email;
+  setError('emailConfirm', '');
+  isDirty = true;
+  setExpress(method);
+
+  $$('[data-express]').forEach((b) => { b.disabled = false; });
+  btn.innerHTML = original;
+
+  // 入力が揃っていれば、そのまま確認画面へ
+  if (validateAll().length === 0) {
+    $('#errorSummary').hidden = true;
+    renderConfirm();
+    showStep(2);
+  }
+}));
+
+$$('[data-express-clear]').forEach((btn) => btn.addEventListener('click', () => {
+  setExpress(null);
+  $('#paymentGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}));
+
+/* =========================================================
+   クーポン
+   ========================================================= */
+$('#applyCoupon').addEventListener('click', () => {
+  const input = form.coupon;
+  input.value = normalizers.coupon(input.value);
+  const ok = validate('coupon') && input.value;
+  appliedCoupon = ok ? input.value : '';
+  $('#coupon-ok').textContent = ok ? `クーポンを適用しました（初回 ${yen(COUPONS[appliedCoupon])} 引き）` : '';
+  updateSummary();
+});
+
+/* =========================================================
+   金額計算・表示
+   ========================================================= */
+function calc() {
+  const plan = PLANS[form.plan.value];
+  if (!plan) return null;
+  const payment = PAYMENTS[currentPayment()];
+  const fee = payment ? payment.fee : 0;
+  const discount = appliedCoupon ? COUPONS[appliedCoupon] : 0;
+  const total = plan.price - discount + plan.shipping + fee;
+  const nextTotal = plan.nextPrice != null ? plan.nextPrice + plan.nextShipping + fee : null;
+  return { plan, payment, fee, discount, total, nextTotal };
+}
+
+function updateSummary() {
+  const c = calc();
+  const body = $('#summaryBody');
+  $('#subscriptionTerms').hidden = form.plan.value === 'single';
+  if (!c) {
+    body.innerHTML = '<p class="summary-empty">プランを選ぶと、金額が表示されます。</p>';
+    return;
+  }
+  const rows = [
+    [`LUMEA SHIFT 50mL ×1（${c.plan.label}）`, yen(c.plan.price)],
+    c.discount ? ['クーポン割引', '−' + yen(c.discount), 'discount'] : null,
+    ['送料', c.plan.shipping ? yen(c.plan.shipping) : '無料'],
+    c.fee ? ['代引手数料', yen(c.fee)] : null,
+  ].filter(Boolean);
+  body.innerHTML = `
+    <dl>
+      ${rows.map(([k, v, cls]) => `<div class="sum-row ${cls || ''}"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}
+      <div class="sum-total"><dt>${c.nextTotal != null ? '初回' : ''}お支払い合計</dt><dd>${yen(c.total)}<span class="tax">税込</span></dd></div>
+    </dl>
+    ${c.nextTotal != null ? `<p class="sum-next">2回目以降：約1ヶ月ごとに ${yen(c.nextTotal)}（税込・送料${c.plan.nextShipping ? yen(c.plan.nextShipping) : '無料'}${c.fee ? '・代引手数料込み' : ''}）<br>回数縛りなし。次回お届けの5日前まで解約できます。</p>` : ''}
+  `;
+}
+
+/* =========================================================
+   確認画面
+   ========================================================= */
+function dlRows(rows) {
+  return rows.map(([k, v, cls]) => `<div><dt>${escapeHtml(k)}</dt><dd class="${cls || ''}">${v}</dd></div>`).join('');
+}
+
+function renderConfirm() {
+  const f = form.elements;
+  const c = calc();
+  const isSub = f.plan.value === 'subscription';
+
+  $('#confirmOrder').innerHTML = dlRows([
+    ['商品', 'LUMEA SHIFT<br>朝夜兼用オールインワン美容液 50mL × 1本'],
+    ['プラン', escapeHtml(c.plan.label) + (isSub ? '（約1ヶ月ごと）' : '（1回のみ）')],
+    c.discount ? ['クーポン', `${escapeHtml(appliedCoupon)}（−${yen(c.discount)}）`] : null,
+    ['送料', c.plan.shipping ? yen(c.plan.shipping) : '無料'],
+    c.fee ? ['代引手数料', yen(c.fee)] : null,
+    [isSub ? '初回お支払い' : 'お支払い合計', `${yen(c.total)}（税込）`, 'strong'],
+    isSub ? ['2回目以降', `${yen(c.nextTotal)}（税込）／約1ヶ月ごと`] : null,
+  ].filter(Boolean));
+
+  const address = `〒${f.zip.value.slice(0, 3)}-${f.zip.value.slice(3)}<br>${escapeHtml(f.pref.value + f.address1.value)}${f.address2.value ? '<br>' + escapeHtml(f.address2.value) : ''}`;
+  const kana = f.lastKana.value || f.firstKana.value ? `（${escapeHtml(f.lastKana.value)} ${escapeHtml(f.firstKana.value)}）` : '';
+  $('#confirmCustomer').innerHTML = dlRows([
+    express ? ['情報の取得元', escapeHtml(EXPRESS_DEMO[express].source)] : null,
+    ['お名前', `${escapeHtml(f.lastName.value)} ${escapeHtml(f.firstName.value)}${kana}`],
+    ['メール', escapeHtml(f.email.value)],
+    ['電話番号', escapeHtml(f.tel.value)],
+    ['お届け先', address],
+    ['時間帯', escapeHtml(f.deliveryTime.value)],
+    ['置き配', f.okihai.checked ? '希望する' : '希望しない'],
+    ['メール配信', f.newsletter.checked ? '受け取る' : '受け取らない'],
+  ].filter(Boolean));
+
+  $('#confirmTerms').innerHTML = dlRows([
+    ['支払い方法', escapeHtml(c.payment.label)],
+    ['支払い時期', escapeHtml(c.payment.timing)],
+    ['お届け', 'お申し込み確定後、3営業日以内に発送します。'],
+    isSub ? ['次回以降', '初回お届けから約1ヶ月ごとに自動でお届けします。'] : null,
+    isSub ? ['解約・お休み', '回数縛りはありません。次回お届け予定日の5日前までに、マイページ・LINE・お問い合わせフォームからお手続きください。'] : ['自動更新', 'ありません（1回のみのお届け）。'],
+    ['返品', '未開封の商品に限り、到着後8日以内にご連絡ください。'],
+  ].filter(Boolean));
+}
+
+/* =========================================================
+   画面切り替え
+   ========================================================= */
+function showStep(n) {
+  Object.entries(steps).forEach(([key, el]) => { el.hidden = Number(key) !== n; });
+  $$('.steps li').forEach((li) => {
+    const s = Number(li.dataset.step);
+    li.toggleAttribute('aria-current', s === n);
+    if (s === n) li.setAttribute('aria-current', 'step');
+    li.classList.toggle('done', s < n);
+  });
+  $('#pageTitle').textContent = { 1: 'お申し込み', 2: '入力内容の確認', 3: 'お申し込み完了' }[n];
+  window.scrollTo(0, 0);
+  $('#pageTitle').focus({ preventScroll: true });
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  // 未適用のクーポン入力も判定しておく
+  if (form.coupon.value && !appliedCoupon) $('#applyCoupon').click();
+
+  const errors = validateAll();
+  const summary = $('#errorSummary');
+  if (errors.length) {
+    summary.textContent = `入力内容に確認が必要な項目が ${errors.length} 件あります。`;
+    summary.hidden = false;
+    const first = errors[0];
+    const el = first === 'plan' || first === 'payment' ? form.elements[first][0] : form.elements[first];
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.focus({ preventScroll: true });
+    return;
+  }
+  summary.hidden = true;
+  renderConfirm();
+  showStep(2);
+});
+
+$('#backToInput').addEventListener('click', () => showStep(1));
+$('#agree').addEventListener('change', () => setError('agree', agreeRule()));
+
+$$('.edit-link').forEach((a) => a.addEventListener('click', (e) => {
+  e.preventDefault();
+  showStep(1);
+  const target = document.getElementById(a.dataset.edit);
+  target.scrollIntoView({ block: 'center' });
+}));
+
+/* =========================================================
+   送信
+   ========================================================= */
+function buildPayload() {
+  const f = form.elements;
+  return {
+    website: f.website.value, // スパム判定用
+    plan: f.plan.value,
+    payment: currentPayment(),
+    checkout: express ? 'express' : 'form',
+    coupon: appliedCoupon,
+    lastName: f.lastName.value,
+    firstName: f.firstName.value,
+    lastKana: f.lastKana.value,
+    firstKana: f.firstKana.value,
+    email: f.email.value,
+    tel: f.tel.value,
+    zip: f.zip.value,
+    pref: f.pref.value,
+    address1: f.address1.value,
+    address2: f.address2.value,
+    deliveryTime: f.deliveryTime.value,
+    okihai: f.okihai.checked,
+    newsletter: f.newsletter.checked,
+    agree: $('#agree').checked,
+    source: sourceText(),
+  };
+}
+
+async function sendOrder(payload) {
+  if (!GAS_URL) {
+    // デモモード
+    await new Promise((r) => setTimeout(r, 800));
+    const d = new Date();
+    return { ok: true, orderId: `DEMO-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-0001` };
+  }
+  // text/plain で送るとプリフライトが発生せず、GASで受け取れる
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+$('#submitOrder').addEventListener('click', async (e) => {
+  const btn = e.currentTarget;
+  const errorBox = $('#sendError');
+  if (btn.disabled) return;
+  const agreeMsg = agreeRule();
+  setError('agree', agreeMsg);
+  if (agreeMsg) { $('#agree').focus(); return; }
+  btn.disabled = true;
+  btn.textContent = '送信しています…';
+  errorBox.hidden = true;
+
+  try {
+    const payload = buildPayload();
+    const result = await sendOrder(payload);
+    if (!result.ok) throw new Error((result.errors || []).join(', ') || 'unknown');
+
+    isSubmitted = true;
+    $('#orderIdText').textContent = result.orderId;
+    $('#completeEmail').textContent = payload.email;
+    const next = PAYMENTS[payload.payment].next;
+    $('#payNext').hidden = !next;
+    $('#payNextLink').textContent = next || '';
+    if (result.paymentUrl) $('#payNextLink').href = result.paymentUrl;
+    showStep(3);
+  } catch (err) {
+    console.error(err);
+    errorBox.textContent = '送信できませんでした。通信環境をご確認のうえ、もう一度お試しください。解決しない場合は support@lumea-beauty.jp までご連絡ください。';
+    errorBox.hidden = false;
+    btn.disabled = false;
+    btn.textContent = 'この内容で申し込む';
+  }
+});
+
+// 入力途中で閉じようとしたときの確認
+window.addEventListener('beforeunload', (e) => {
+  if (isDirty && !isSubmitted) { e.preventDefault(); e.returnValue = ''; }
+});
+
+if (LINE_URL) {
+  document.querySelectorAll('a[href$="#line"]').forEach((a) => {
+    a.href = LINE_URL;
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+}
+
+updateSummary();
+</script>
+</body>
+</html>
