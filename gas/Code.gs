@@ -17,7 +17,7 @@ const TZ = 'Asia/Tokyo';
 
 // order.html の PLANS / PAYMENTS / COUPONS と同じ内容にそろえる
 const PLANS = {
-  subscription: { label: '定期便', price: 1980, nextPrice: 3480, shipping: 0, nextShipping: 0 },
+  subscription: { label: '定期便', price: 1980, nextPrice: 3480, shipping: 0, nextShipping: 550 },
   single:       { label: '単品購入', price: 3980, nextPrice: null, shipping: 0, nextShipping: null },
 };
 // express: かんたん決済（フリガナ任意）／ needsPayment: 申し込み後に支払い操作が必要
@@ -189,7 +189,7 @@ function sendCustomerMail(d, o, orderId) {
     '■ 送料：' + (o.plan.shipping ? yen(o.plan.shipping) : '無料'),
     o.payment.fee ? '■ 代引手数料：' + yen(o.payment.fee) : null,
     '■ ' + (isSub ? '初回' : '') + 'お支払い合計：' + yen(o.total) + '（税込）',
-    isSub ? '■ 2回目以降：約1ヶ月ごとに ' + yen(o.nextTotal) + '（税込）' : null,
+    isSub ? '■ 2回目以降：約1ヶ月ごとに ' + yen(o.nextTotal) + '（税込・商品 ' + yen(o.plan.nextPrice) + ' ＋ 送料 ' + (o.plan.nextShipping ? yen(o.plan.nextShipping) : '無料') + '）' : null,
     '――――――――――――――――',
     '',
     '【お届け先】',

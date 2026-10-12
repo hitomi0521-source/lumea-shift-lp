@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>お申し込み｜LUMEA SHIFT</title>
-<meta name="description" content="LUMEA SHIFT のお申し込みページ。定期便は初回¥1,980、回数縛りなし。">
+<meta name="description" content="LUMEA SHIFT のお申し込みページ。定期便は初回¥1,980（送料無料）、2回目以降¥4,030（送料込）、回数縛りなし。">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F5F5F5">
 
@@ -63,6 +63,15 @@ a { color: inherit; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 a, button { transition: opacity var(--ease); }
 a:hover, button:hover { opacity: 0.85; }
+/* スマホはホバーが効かないため、押した瞬間の反応を用意する */
+.btn-main, .btn-sub, .btn-line, .btn-express, .back-link {
+  transition: opacity var(--ease), transform 0.1s ease;
+}
+.btn-main:active,
+.btn-sub:active,
+.btn-line:active,
+.btn-express:active,
+.back-link:active { transform: scale(0.98); opacity: 0.9; }
 :focus-visible { outline: 1px solid var(--accent-dark); outline-offset: 3px; }
 [hidden] { display: none !important; }
 .visually-hidden {
@@ -563,6 +572,13 @@ main { padding: 40px 24px 80px; }
 .sum-total dt { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; }
 .sum-total dd { font-family: var(--serif); font-size: 26px; line-height: 1.2; }
 .sum-total .tax { font-size: 10px; color: var(--text-sub); margin-left: 3px; font-family: var(--sans); }
+.sub-note {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--text-sub);
+}
 .sum-next {
   margin-top: 10px;
   font-size: 11px;
@@ -737,6 +753,7 @@ main { padding: 40px 24px 80px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
+  *:active { transform: none !important; }
 }
 </style>
 </head>
@@ -790,8 +807,8 @@ main { padding: 40px 24px 80px; }
                 定期便
                 <span class="choice-price"><s>¥3,980</s>¥1,980</span>
               </span>
-              <span class="choice-detail">初回のお届け後、約1ヶ月ごとにお届けします。<br>2回目以降 ¥3,480（税込）</span>
-              <span class="choice-meta">回数縛りなし / 次回お届けの5日前まで解約OK</span>
+              <span class="choice-detail">初回のお届け後、約1ヶ月ごとにお届けします。<br>2回目以降 ¥3,480＋送料¥550＝¥4,030（税込）</span>
+              <span class="choice-meta">回数縛りなし。解約は次回発送の5日前まで</span>
             </span>
           </label>
 
@@ -995,7 +1012,7 @@ main { padding: 40px 24px 80px; }
         <div class="terms-box" id="subscriptionTerms">
           <h3>定期便について</h3>
           <ul>
-            <li>初回 ¥1,980、2回目以降は約1ヶ月ごとに ¥3,480（税込）でお届けします。</li>
+            <li>初回 ¥1,980（送料無料）。2回目以降は約1ヶ月ごとに ¥3,480 ＋ 送料 ¥550 = ¥4,030（税込）でお届けします。</li>
             <li>回数の縛りはありません。初回のお届け後に解約することもできます。</li>
             <li>解約・お休みは、次回お届け予定日の5日前までに、マイページ・LINE・お問い合わせフォームから受け付けます。</li>
           </ul>
@@ -1099,14 +1116,14 @@ main { padding: 40px 24px 80px; }
    ========================================================= */
 // Google Apps Script をデプロイしたウェブアプリのURL。
 // 空のままだとデモモード（送信せずに完了画面を表示）で動きます。
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxWpyZIQd5HZl1Dc3Xkt0rhgn2B_XZlyT77uHNqJQD8WHctsBU-xM0cr6no6zAFB02R/exec';
+const GAS_URL = '';
 
 // LINE友だち追加URL（LP側と同じものを設定）
 const LINE_URL = '';
 
 // 金額はGAS側でも同じ設定で再計算します（改ざん対策）。変更時は両方を更新。
 const PLANS = {
-  subscription: { label: '定期便', price: 1980, listPrice: 3980, nextPrice: 3480, shipping: 0, nextShipping: 0 },
+  subscription: { label: '定期便', price: 1980, listPrice: 3980, nextPrice: 3480, shipping: 0, nextShipping: 550 },
   single:       { label: '単品購入', price: 3980, listPrice: 3980, nextPrice: null, shipping: 0, nextShipping: null },
 };
 const PAYMENTS = {
@@ -1412,10 +1429,10 @@ function renderConfirm() {
     ['商品', 'LUMEA SHIFT<br>朝夜兼用オールインワン美容液 50mL × 1本'],
     ['プラン', escapeHtml(c.plan.label) + (isSub ? '（約1ヶ月ごと）' : '（1回のみ）')],
     c.discount ? ['クーポン', `${escapeHtml(appliedCoupon)}（−${yen(c.discount)}）`] : null,
-    ['送料', c.plan.shipping ? yen(c.plan.shipping) : '無料'],
+    ['送料', (c.plan.shipping ? yen(c.plan.shipping) : '無料') + (isSub ? '（初回）' : '')],
     c.fee ? ['代引手数料', yen(c.fee)] : null,
     [isSub ? '初回お支払い' : 'お支払い合計', `${yen(c.total)}（税込）`, 'strong'],
-    isSub ? ['2回目以降', `${yen(c.nextTotal)}（税込）／約1ヶ月ごと`] : null,
+    isSub ? ['2回目以降', `${yen(c.nextTotal)}（税込）／約1ヶ月ごと<br><span class="sub-note">商品 ${yen(c.plan.nextPrice)} ＋ 送料 ${c.plan.nextShipping ? yen(c.plan.nextShipping) : '無料'}</span>`] : null,
   ].filter(Boolean));
 
   const address = `〒${f.zip.value.slice(0, 3)}-${f.zip.value.slice(3)}<br>${escapeHtml(f.pref.value + f.address1.value)}${f.address2.value ? '<br>' + escapeHtml(f.address2.value) : ''}`;
