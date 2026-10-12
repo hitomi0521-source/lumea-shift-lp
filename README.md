@@ -92,7 +92,7 @@ GAS側では、フォームから送られた金額を使わずに計算し直�
 | V8 NIGHT | 静止画 | `images/5.jpg` |
 | V9 PROBLEM | 動画 | `videos/v9-problem.mp4` ＋ `images/v9-poster.jpg` |
 | V3 SOLUTION | 動画（1回再生） | `videos/v3-texture.mp4` ＋ `images/v3-poster.jpg` |
-| UGC VOICES | 未制作（プレースホルダ） | `images/3.jpg` |
+| UGC VOICES | 動画（タップで再生） | `videos/ugc-voices.mp4` ＋ `images/ugc-poster.jpg` |
 
 動画はすべて無音・ループ。V1 の音声だけは、動画に埋め込まず `audio/v1-hero.mp3` を音声トグルで別再生しています。
 

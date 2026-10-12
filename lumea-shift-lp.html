@@ -690,10 +690,8 @@ details[open] .ingredient-body { max-height: 800px; }
   height: 280px;
   margin-bottom: 16px;
 }
-.ugc-frame .video-slot {
-  background-color: var(--dark);
-  opacity: 0.85;
-}
+.ugc-frame .video-slot,
+.ugc-frame .ugc-video { background-color: var(--dark); }
 .ugc-play {
   position: absolute;
   top: 50%; left: 50%;
@@ -1347,15 +1345,12 @@ details[open] .acc-icon::before { content: "−"; }
     <h2 id="voices-title" class="heading">同じような人が、<br>続けています。</h2>
 
     <div class="ugc-frame slot-wrap">
-      <!-- UGC: 実装時に動画に差し替え（タップで再生・controls 付き想定）
-      <video playsinline controls preload="none" poster="images/ugc-poster.jpg" class="ugc-video">
+      <video class="slot-video ugc-video" playsinline preload="none"
+             poster="images/ugc-poster.jpg" aria-label="LUMEA SHIFT を顔になじませる様子"
+             style="object-position: 50% 50%">
         <source src="videos/ugc-voices.mp4" type="video/mp4">
+        <img class="slot-img" src="images/3.jpg" alt="お客様の声 動画のサムネイル" style="object-position: 50% 28%">
       </video>
-      -->
-      <div class="video-slot" data-video="UGC" data-label="VOICES">
-        <img class="slot-img" src="images/3.jpg" alt="お客様の声 動画のサムネイル" loading="lazy" decoding="async" style="object-position: 50% 28%">
-        <span class="video-badge">▶ UGC VOICES</span>
-      </div>
       <button class="ugc-play" type="button" aria-label="お客様の声の動画を再生">▶</button>
     </div>
 
@@ -1799,16 +1794,26 @@ if (LINE_URL) {
   vids.forEach(v => io.observe(v));
 })();
 
-/* UGC 再生ボタン（UGC の video 差し替え後に有効） */
+/* UGC 再生ボタン（タップで1回再生。終わったらボタンを戻す） */
 (function () {
   const btn = document.querySelector('.ugc-play');
-  if (!btn) return;
+  const video = document.querySelector('.ugc-video');
+  if (!btn || !video) return;
+
   btn.addEventListener('click', () => {
-    const video = document.querySelector('.ugc-video');
-    if (!video) return;
-    video.play();
-    btn.hidden = true;
+    video.currentTime = 0;
+    video.play().then(() => { btn.hidden = true; }).catch(() => {});
   });
+
+  video.addEventListener('ended', () => { btn.hidden = false; });
+  video.addEventListener('pause', () => { btn.hidden = false; });
+
+  // 画面外に出たら止める
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting && !video.paused) video.pause();
+    }, { threshold: 0.2 }).observe(video);
+  }
 })();
 </script>
 </body>
