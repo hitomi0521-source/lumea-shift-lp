@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LUMEA SHIFT｜朝夜兼用オールインワン美容液</title>
-<meta name="description" content="LUMEA SHIFT - 朝夜兼用オールインワン美容液。1本で整える、続けやすいスキンケア。初回¥1,980、回数縛りなし。">
+<meta name="description" content="LUMEA SHIFT - 朝夜兼用オールインワン美容液。1本で整える、続けやすいスキンケア。初回¥1,980（送料無料）、2回目以降¥4,030（送料込）、回数縛りなし。">
 <meta name="theme-color" content="#F5F5F5">
 
 <!-- Favicon -->
@@ -15,13 +15,12 @@
 <!-- OGP -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="LUMEA SHIFT｜完璧じゃなくて、いい。">
-<meta property="og:description" content="朝夜兼用オールインワン美容液。1本で整える、続けやすいスキンケア。初回¥1,980、回数縛りなし。">
+<meta property="og:description" content="朝夜兼用オールインワン美容液。1本で整える、続けやすいスキンケア。初回¥1,980（送料無料）、2回目以降¥4,030（送料込）、回数縛りなし。">
 <!-- 公開時は絶対URLに変更（SNSは相対パスを読めません）例：https://example.com/images/ogp.jpg -->
 <meta property="og:image" content="images/ogp.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:site_name" content="LUMEA SHIFT">
-<meta property="og:locale" content="ja_JP">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -88,6 +87,21 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 a, button { transition: opacity var(--ease); }
 a:hover, button:hover { opacity: 0.85; }
+/* スマホはホバーが効かないため、押した瞬間の反応を用意する */
+.btn-main:active,
+.btn-sub:active,
+.btn-o:active,
+.s-main:active,
+.s-line:active,
+.menu-cta:active,
+.menu-line:active,
+.ugc-play:active,
+.btn-line:active,
+.sound-toggle:active { transform: scale(0.98); opacity: 0.9; }
+.btn-main, .btn-sub, .btn-o,
+.s-main, .s-line,
+.menu-cta, .menu-line,
+.ugc-play, .btn-line, .sound-toggle { transition: opacity var(--ease), transform 0.1s ease; }
 :focus-visible { outline: 1px solid var(--accent-dark); outline-offset: 3px; }
 
 .visually-hidden {
@@ -256,32 +270,35 @@ main { overflow-x: hidden; }
 }
 
 /* =========================================================
-   00. Header
+   00. FV 上に重ねるUI（固定ヘッダーは廃止し、FV を画面上端まで出す）
    ========================================================= */
-.site-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 50;
-  margin: 0 auto;
-  background: rgba(245,245,245,0.95);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  /* 仕様の「上52px」はモック上のステータスバー領域。実機では safe-area で吸収 */
-  padding-top: env(safe-area-inset-top);
-}
-.header-inner {
-  height: 60px;
+.hero-top {
+  position: absolute;
+  top: calc(14px + env(safe-area-inset-top));
+  left: 8px; right: 8px;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
 }
-.header-btn {
+.hero-btn {
   width: 40px; height: 40px;
   display: grid; place-items: center;
   font-size: 16px;
-  color: var(--text);
   line-height: 1;
+  color: var(--secondary);
+  /* 明るい映像でも読めるように、ごく弱い影を落とす */
+  text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+}
+.hero-logo {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.45em;
+  margin-right: -0.45em;
+  line-height: 1;
+  color: var(--secondary);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.35);
 }
 .logo {
   font-family: var(--serif);
@@ -372,15 +389,51 @@ main { overflow-x: hidden; }
    ========================================================= */
 .hero-section {
   position: relative;
-  min-height: 540px;
+  /* 旧FV 540px ＋ 直下にあった商品帯 120px ぶんを吸収 */
+  min-height: 660px;
   color: var(--secondary);
   overflow: hidden;
 }
-.hero-media {
+
+/* FV スライダー */
+.hero-slider {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  touch-action: pan-y;
 }
-.hero-media .video-badge { top: calc(72px + env(safe-area-inset-top)); bottom: auto; }
+.hero-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero-slide {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  flex: none;
+}
+.hero-dots {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: calc(44px + env(safe-area-inset-bottom));
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.hero-dots button {
+  width: 6px; height: 6px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(245,245,245,0.45);
+  transition: background var(--ease), transform var(--ease);
+}
+.hero-dots button.is-current {
+  background: var(--secondary);
+  transform: scale(1.25);
+}
 .slot-video {
   position: absolute;
   inset: 0;
@@ -404,18 +457,43 @@ main { overflow-x: hidden; }
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.7) 100%);
+  z-index: 1;
+  /* 2枚目（明るい商品カット）でも文字が読めるように、上下から薄く締める。
+     商品の見え方を損なわない濃さに留め、不足分は text-shadow で補う。 */
+  background:
+    linear-gradient(to bottom,
+      rgba(0,0,0,0.45) 0%,
+      rgba(0,0,0,0.26) 30%,
+      rgba(0,0,0,0) 55%),
+    linear-gradient(to bottom,
+      rgba(0,0,0,0) 40%,
+      rgba(0,0,0,0.75) 100%);
   pointer-events: none;
+  transition: background 0.45s ease;
+}
+/* 2枚目は見出しを伏せるので、上の締めはロゴとメニューに必要なぶんだけにする */
+.hero-section[data-slide="1"] .hero-overlay {
+  background:
+    linear-gradient(to bottom,
+      rgba(0,0,0,0.34) 0%,
+      rgba(0,0,0,0.10) 18%,
+      rgba(0,0,0,0) 34%),
+    linear-gradient(to bottom,
+      rgba(0,0,0,0) 40%,
+      rgba(0,0,0,0.75) 100%);
 }
 .hero-content {
   position: relative;
-  z-index: 1;
-  min-height: 540px;
+  z-index: 2;
+  min-height: 660px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: calc(104px + env(safe-area-inset-top)) 24px 64px;
+  padding: calc(84px + env(safe-area-inset-top)) 24px 76px;
+  pointer-events: none; /* スライダーのスワイプを邪魔しない */
 }
+.hero-content a,
+.hero-content button { pointer-events: auto; }
 .hero-title {
   font-family: var(--serif);
   font-weight: 400;
@@ -423,7 +501,12 @@ main { overflow-x: hidden; }
   line-height: 1.5;
   letter-spacing: 0.02em;
   color: var(--secondary);
+  text-shadow: 0 1px 14px rgba(0,0,0,0.45);
+  transition: opacity 0.45s ease;
 }
+/* 2枚目は商品カット。見出しは1枚目のコピーなので伏せ、商品を見せる
+   （高さは保ったままなので、下のCTAブロックは動かない） */
+.hero-section[data-slide="1"] .hero-title { opacity: 0; }
 .hero-bottom { text-align: center; }
 .hero-sub {
   font-size: 11.5px;
@@ -431,6 +514,7 @@ main { overflow-x: hidden; }
   color: rgba(245,245,245,0.9);
   text-align: left;
   margin-bottom: 28px;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.5);
 }
 .hero-category {
   font-size: 10.5px;
@@ -460,8 +544,8 @@ main { overflow-x: hidden; }
 .sound-toggle {
   position: absolute;
   right: 16px;
-  bottom: 20px;
-  z-index: 2;
+  bottom: calc(31px + env(safe-area-inset-bottom));
+  z-index: 3;
   width: 32px; height: 32px;
   border-radius: 50%;
   background: rgba(0,0,0,0.35);
@@ -473,9 +557,9 @@ main { overflow-x: hidden; }
 .scroll-hint {
   position: absolute;
   left: 50%;
-  bottom: 10px;
-  z-index: 2;
-  height: 32px;
+  bottom: calc(8px + env(safe-area-inset-bottom));
+  z-index: 3;
+  height: 26px;
   width: 0.5px;
   margin-left: -0.25px;
   background: rgba(245,245,245,0.4);
@@ -622,39 +706,34 @@ main { overflow-x: hidden; }
 details > summary { list-style: none; cursor: pointer; }
 details > summary::-webkit-details-marker { display: none; }
 
-.acc-body,
-.ingredient-body {
+.acc-body {
   max-height: 0;
   overflow: hidden;
   transition: max-height var(--ease);
 }
 details[open] .acc-body { max-height: 400px; }
-details[open] .ingredient-body { max-height: 800px; }
 /* 開いた瞬間にも遷移させる（対応ブラウザのみ・非対応でも開閉は動作） */
 @starting-style {
-  details[open] .acc-body,
-  details[open] .ingredient-body { max-height: 0; }
+  details[open] .acc-body { max-height: 0; }
 }
 
-.ingredient-acc summary {
-  border: var(--hairline) solid var(--text);
-  padding: 14px 0;
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.25em;
+/* 成分表：購入判断に直結する情報なので、開かなくても読める形で置く */
+.ingredient-box {
+  border-top: var(--hairline) solid var(--border-warm);
+  border-bottom: var(--hairline) solid var(--border-warm);
+  padding: 26px 0 22px;
+}
+.ingredient-label {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.4em;
   line-height: 1.6;
-  color: var(--text);
-  transition: opacity var(--ease);
+  color: var(--accent-dark);
+  margin-bottom: 22px;
 }
-.ingredient-acc summary:hover { opacity: 0.85; }
-.ingredient-acc summary::after {
-  content: "+";
-  margin-left: 10px;
-  font-family: var(--serif);
-}
-.ingredient-acc[open] summary::after { content: "−"; }
-.ingredient-inner { padding: 28px 4px 4px; }
-.ingredient-body h4 {
+.ingredient-inner > *:last-child { margin-bottom: 0; }
+.ingredient-box h4 {
   font-family: var(--serif);
   font-weight: 400;
   font-size: 13px;
@@ -663,13 +742,13 @@ details[open] .ingredient-body { max-height: 800px; }
   color: var(--accent-dark);
   margin: 0 0 8px;
 }
-.ingredient-body ul {
+.ingredient-box ul {
   display: flex;
   flex-wrap: wrap;
   gap: 0 18px;
   margin-bottom: 22px;
 }
-.ingredient-body li {
+.ingredient-box li {
   font-size: 12px;
   line-height: 2;
   color: var(--text-sub);
@@ -802,6 +881,12 @@ details[open] .ingredient-body { max-height: 800px; }
   background: rgba(0,0,0,0.35);
   padding: 4px 10px;
 }
+.time-tag .ampm {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  opacity: 0.78;
+  margin-right: 5px;
+}
 .scene-name {
   font-size: 10.5px;
   font-weight: 500;
@@ -824,21 +909,33 @@ details[open] .ingredient-body { max-height: 800px; }
   padding-top: 28px;
   border-top: var(--hairline) solid var(--border-warm);
 }
+/* 番号は --accent だと背景 --primary とのコントラストが 1.40:1 でほぼ読めないため、
+   --accent-dark（3.28:1）に変更し、タイトルとあわせて少し強めた */
 .benefit-item .num {
   display: block;
-  font-size: 34px;
-  line-height: 1.3;
-  color: var(--accent);
-  font-weight: 300;
+  font-size: 36px;
+  line-height: 1.2;
+  color: var(--accent-dark);
+  font-weight: 400;
+  letter-spacing: 0.04em;
 }
 .benefit-item h3 {
   font-family: var(--serif);
-  font-weight: 400;
-  font-size: 17px;
-  line-height: 1.8;
-  letter-spacing: 0.08em;
-  color: var(--text);
-  margin: 4px 0 8px;
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.7;
+  letter-spacing: 0.1em;
+  color: var(--dark);
+  margin: 10px 0 10px;
+}
+/* タイトルの下に短い罫を入れ、番号・タイトル・本文の区切りを作る */
+.benefit-item h3::after {
+  content: "";
+  display: block;
+  width: 18px;
+  height: var(--hairline);
+  background: var(--accent-dark);
+  margin: 12px auto 0;
 }
 
 /* =========================================================
@@ -923,6 +1020,15 @@ details[open] .acc-icon::before { content: "−"; }
 .price-row .strike { font-family: var(--serif); font-size: 12px; color: rgba(245,245,245,0.5); margin-right: 10px; }
 .price-row .big { font-size: 30px; font-weight: 400; }
 .price-row .tax { font-size: 10px; margin-left: 2px; color: rgba(245,245,245,0.6); }
+.price-note {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: var(--hairline) solid rgba(245,245,245,0.25);
+  font-size: 11px;
+  line-height: 1.9;
+  letter-spacing: 0.05em;
+  color: rgba(245,245,245,0.7);
+}
 .badges {
   display: flex;
   justify-content: center;
@@ -1092,7 +1198,6 @@ details[open] .acc-icon::before { content: "−"; }
 @media (min-width: 1024px) {
   body { background: var(--primary); }
   main { max-width: 480px; margin: 0 auto; background: var(--secondary); }
-  .site-header,
   .sticky-bar,
   .site-footer { max-width: 480px; margin-left: auto; margin-right: auto; }
 
@@ -1117,6 +1222,8 @@ details[open] .acc-icon::before { content: "−"; }
     animation: none !important;
     transition: none !important;
   }
+  /* 押下時の縮小も無効化する */
+  *:active { transform: none !important; }
 }
 </style>
 </head>
@@ -1126,14 +1233,6 @@ details[open] .acc-icon::before { content: "−"; }
 <!-- =========================================================
      00. Header
      ========================================================= -->
-<header class="site-header">
-  <div class="header-inner">
-    <button class="header-btn" type="button" id="menuOpen" aria-label="メニューを開く" aria-expanded="false" aria-controls="menuPanel">☰</button>
-    <a href="#top" class="logo" aria-label="LUMEA SHIFT トップへ">LUMEA SHIFT</a>
-    <a href="#cv" class="header-btn" aria-label="カートを見る">◐</a>
-  </div>
-</header>
-
 <div class="menu-overlay" id="menuOverlay" hidden></div>
 <nav class="menu-panel" id="menuPanel" aria-label="メニュー" hidden>
   <div class="menu-head">
@@ -1164,14 +1263,38 @@ details[open] .acc-icon::before { content: "−"; }
        01. Hero
        ========================================================= -->
   <section class="hero-section" aria-labelledby="hero-title">
-    <div class="hero-media slot-wrap">
-      <video class="hero-video" autoplay muted loop playsinline preload="metadata"
-             poster="images/v1-poster.jpg" aria-label="帰宅して壁にもたれ、洗面台でスキンケアをする女性">
-        <source src="videos/v1-hero.mp4" type="video/mp4">
-        <img class="slot-img" src="images/11.jpg" alt="帰宅して壁にもたれ、スマートフォンを見る女性" style="object-position: 50% 45%">
-      </video>
+    <!-- FV スライダー（1枚目＝ブランドムービー / 2枚目＝商品） -->
+    <div class="hero-slider" id="heroSlider" aria-roledescription="カルーセル" aria-label="LUMEA SHIFT の紹介">
+      <div class="hero-track" id="heroTrack">
+        <div class="hero-slide" role="group" aria-roledescription="スライド" aria-label="1 / 2 ブランドムービー">
+          <video class="hero-video" autoplay muted loop playsinline preload="metadata"
+                 poster="images/v1-poster.jpg" aria-label="帰宅して壁にもたれ、洗面台でスキンケアをする女性">
+            <source src="videos/v1-hero.mp4" type="video/mp4">
+            <img class="slot-img" src="images/11.jpg" alt="帰宅して壁にもたれ、スマートフォンを見る女性" style="object-position: 50% 45%">
+          </video>
+        </div>
+        <div class="hero-slide" role="group" aria-roledescription="スライド" aria-label="2 / 2 商品">
+          <video class="hero-video hero-video-product" muted loop playsinline preload="none"
+                 poster="images/v2-poster.jpg" aria-label="やわらかな光と葉の影のなかに置かれた LUMEA SHIFT">
+            <source src="videos/v2-product.mp4" type="video/mp4">
+            <img class="slot-img" src="images/10.jpg" alt="やわらかな光と葉の影が落ちる棚に置かれた LUMEA SHIFT" style="object-position: 50% 62%">
+          </video>
+        </div>
+      </div>
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>
+
+    <!-- ヘッダーをなくし、FV の上に重ねる -->
+    <div class="hero-top">
+      <button class="hero-btn" type="button" id="menuOpen" aria-label="メニューを開く" aria-expanded="false" aria-controls="menuPanel">☰</button>
+      <span class="hero-logo">LUMEA SHIFT</span>
+      <a href="#cv" class="hero-btn" aria-label="カートを見る">◐</a>
+    </div>
+
+    <div class="hero-dots" id="heroDots" role="tablist" aria-label="スライドの切り替え">
+      <button type="button" class="is-current" role="tab" aria-selected="true" aria-label="1枚目：ブランドムービー"></button>
+      <button type="button" role="tab" aria-selected="false" aria-label="2枚目：商品"></button>
+    </div>
 
     <div class="hero-content">
       <h1 id="hero-title" class="hero-title">帰宅が遅い日は、<br>全部やるの、無理。</h1>
@@ -1181,7 +1304,7 @@ details[open] .acc-icon::before { content: "−"; }
         <p class="hero-category">朝夜兼用オールインワン美容液 / 50mL</p>
         <a href="order.html?plan=subscription" class="btn-main">まず1本、試してみる</a>
         <p class="hero-offer">
-          初回 <span class="num">¥1,980</span>（<span class="visually-hidden">通常価格</span><s>元¥3,980</s>）・送料無料・回数縛りなし
+          初回 <span class="num">¥1,980</span>（<span class="visually-hidden">通常価格</span><s>元¥3,980</s>）・初回送料無料<br>2回目以降 ¥4,030（送料込）・回数縛りなし
         </p>
         <a href="#line" class="hero-line"><span class="line-tag">LINE</span>まだ迷う人は、LINEで500円OFFクーポンを</a>
       </div>
@@ -1200,10 +1323,6 @@ details[open] .acc-icon::before { content: "−"; }
        02. Concept
        ========================================================= -->
   <section id="concept" class="concept bg-light" aria-labelledby="concept-title">
-    <div class="slot-wrap bleed" style="height: 200px; margin-top: -80px; margin-bottom: 56px;">
-      <img class="slot-img" src="images/10.jpg" alt="やわらかな光と葉の影が落ちる棚に置かれた LUMEA SHIFT" loading="lazy" decoding="async" style="object-position: 50% 62%">
-    </div>
-
     <p class="eyebrow">CONCEPT</p>
     <h2 id="concept-title" class="heading concept-title">完璧じゃなくて、<br>いい。</h2>
     <hr class="divider">
@@ -1215,9 +1334,9 @@ details[open] .acc-icon::before { content: "−"; }
        ========================================================= -->
   <section class="problem" aria-labelledby="problem-title">
     <div class="problem-visual slot-wrap">
-      <video class="slot-video" autoplay muted loop playsinline preload="none"
-             poster="images/v9-poster.jpg" aria-label="夜、帰宅後に洗面台の前で疲れて頬に手を当てる女性"
-             style="object-position: 50% 30%">
+      <video class="slot-video play-once" muted playsinline preload="none"
+             poster="images/v9-poster.jpg" aria-label="夜、玄関のドアを開けて帰宅し、洗面台の前で疲れた顔をする女性"
+             style="object-position: 50% 8%">
         <source src="videos/v9-problem.mp4" type="video/mp4">
         <img class="slot-img" src="images/13.jpg" alt="夜、帰宅後に洗面台の前で疲れて頬に手を当てる女性" style="object-position: 50% 30%">
       </video>
@@ -1303,38 +1422,36 @@ details[open] .acc-icon::before { content: "−"; }
 
     <p class="body-text">保湿・整肌・エモリエント。<br>1本のなかに、必要なものだけを。<br>やることを減らして、続く方へ。</p>
 
-    <details class="ingredient-acc">
-      <summary>成分の詳細を見る</summary>
-      <div class="ingredient-body">
-        <div class="ingredient-inner">
-          <h4>保湿</h4>
-          <ul>
-            <li>グリセリン</li>
-            <li>BG</li>
-            <li>ヒアルロン酸Na</li>
-            <li>加水分解コラーゲン</li>
-            <li>セラミドNP</li>
-            <li>PCA-Na</li>
-          </ul>
-          <h4>整肌</h4>
-          <ul>
-            <li>ナイアシンアミド</li>
-            <li>アラントイン</li>
-            <li>カミツレ花エキス</li>
-          </ul>
-          <h4>エモリエント</h4>
-          <ul>
-            <li>スクワラン</li>
-          </ul>
-          <h4>ベース・防腐</h4>
-          <ul>
-            <li>水</li>
-            <li>フェノキシエタノール</li>
-          </ul>
-          <p class="ingredient-note">※成分は配合目的別に分類しています。全成分表示はパッケージをご確認ください。</p>
-        </div>
+    <div class="ingredient-box">
+      <p class="ingredient-label">配合成分</p>
+      <div class="ingredient-inner">
+        <h4>保湿</h4>
+        <ul>
+          <li>グリセリン</li>
+          <li>BG</li>
+          <li>ヒアルロン酸Na</li>
+          <li>加水分解コラーゲン</li>
+          <li>セラミドNP</li>
+          <li>PCA-Na</li>
+        </ul>
+        <h4>整肌</h4>
+        <ul>
+          <li>ナイアシンアミド</li>
+          <li>アラントイン</li>
+          <li>カミツレ花エキス</li>
+        </ul>
+        <h4>エモリエント</h4>
+        <ul>
+          <li>スクワラン</li>
+        </ul>
+        <h4>ベース・防腐</h4>
+        <ul>
+          <li>水</li>
+          <li>フェノキシエタノール</li>
+        </ul>
+        <p class="ingredient-note">※成分は配合目的別に分類しています。全成分表示はパッケージをご確認ください。</p>
       </div>
-    </details>
+    </div>
   </section>
 
   <!-- =========================================================
@@ -1344,14 +1461,14 @@ details[open] .acc-icon::before { content: "−"; }
     <p class="eyebrow">04 VOICES</p>
     <h2 id="voices-title" class="heading">同じような人が、<br>続けています。</h2>
 
-    <div class="ugc-frame slot-wrap">
+    <div class="ugc-frame slot-wrap bleed">
       <video class="slot-video ugc-video" playsinline preload="none"
-             poster="images/ugc-poster.jpg" aria-label="LUMEA SHIFT を顔になじませる様子"
+             poster="images/ugc-poster.jpg" aria-label="LUMEA SHIFT を手に持った女性が、定期便の価格と使い勝手について話す動画（字幕つき）"
              style="object-position: 50% 50%">
         <source src="videos/ugc-voices.mp4" type="video/mp4">
         <img class="slot-img" src="images/3.jpg" alt="お客様の声 動画のサムネイル" style="object-position: 50% 28%">
       </video>
-      <button class="ugc-play" type="button" aria-label="お客様の声の動画を再生">▶</button>
+      <button class="ugc-play" type="button" aria-label="お客様の声の動画を再生（音が出ます）">▶</button>
     </div>
 
     <ul class="voice-list">
@@ -1398,7 +1515,12 @@ details[open] .acc-icon::before { content: "−"; }
     <ol>
       <li class="journey-step">
         <div class="slot-wrap bleed">
-          <img class="slot-img" src="images/7.jpg" alt="夜、ランプに照らされたベッドサイドの LUMEA SHIFT" loading="lazy" decoding="async" style="object-position: 50% 55%">
+          <video class="slot-video play-once" muted playsinline preload="none"
+                 poster="images/v4-poster.jpg" aria-label="夜、鏡の前で両手を頬にあててなじませる女性"
+                 style="object-position: 50% 50%">
+            <source src="videos/v4-day01.mp4" type="video/mp4">
+            <img class="slot-img" src="images/7.jpg" alt="夜、ランプに照らされたベッドサイドの LUMEA SHIFT" style="object-position: 50% 55%">
+          </video>
         </div>
         <p class="journey-label">DAY 01</p>
         <h3 class="journey-title">とりあえず、今夜これだけで終わり。</h3>
@@ -1407,7 +1529,12 @@ details[open] .acc-icon::before { content: "−"; }
 
       <li class="journey-step">
         <div class="slot-wrap bleed">
-          <img class="slot-img" src="images/8.jpg" alt="朝の洗面台で LUMEA SHIFT に手をのばす" loading="lazy" decoding="async" style="object-position: 50% 50%">
+          <video class="slot-video play-once" muted playsinline preload="none"
+                 poster="images/v5-poster.jpg" aria-label="朝、手のひらで美容液を広げて顔になじませる女性"
+                 style="object-position: 50% 50%">
+            <source src="videos/v5-month01.mp4" type="video/mp4">
+            <img class="slot-img" src="images/8.jpg" alt="朝の洗面台で LUMEA SHIFT に手をのばす" style="object-position: 50% 50%">
+          </video>
         </div>
         <p class="journey-label">MONTH 01</p>
         <h3 class="journey-title">気づけば、続いている。</h3>
@@ -1416,9 +1543,9 @@ details[open] .acc-icon::before { content: "−"; }
 
       <li class="journey-step">
         <div class="slot-wrap bleed">
-          <video class="slot-video" autoplay muted loop playsinline preload="none"
-                 poster="images/v6-poster.jpg" aria-label="朝、身支度を整えて出かける女性"
-                 style="object-position: 50% 15%">
+          <video class="slot-video play-once" muted playsinline preload="none"
+                 poster="images/v6-poster.jpg" aria-label="朝、鏡の前でコートの襟を整えて顔を上げる女性"
+                 style="object-position: 50% 50%">
             <source src="videos/v6-month03.mp4" type="video/mp4">
             <img class="slot-img" src="images/14.jpg" alt="朝、身支度を整えて出かける女性" style="object-position: 50% 15%">
           </video>
@@ -1441,7 +1568,7 @@ details[open] .acc-icon::before { content: "−"; }
 
     <div class="scene-block">
       <div class="slot-wrap bleed">
-        <span class="time-tag">07:20</span>
+        <span class="time-tag"><span class="ampm">AM</span>7:20</span>
         <img class="slot-img" src="images/4.jpg" alt="朝の光の中で LUMEA SHIFT を手に取る" loading="lazy" decoding="async" style="object-position: 50% 35%">
       </div>
       <h3 class="scene-name">MORNING</h3>
@@ -1450,7 +1577,7 @@ details[open] .acc-icon::before { content: "−"; }
 
     <div class="scene-block">
       <div class="slot-wrap bleed">
-        <span class="time-tag">23:40</span>
+        <span class="time-tag"><span class="ampm">PM</span>11:40</span>
         <img class="slot-img" src="images/5.jpg" alt="夜の洗面台に置かれた LUMEA SHIFT とタオル" loading="lazy" decoding="async" style="object-position: 50% 60%">
       </div>
       <h3 class="scene-name">NIGHT</h3>
@@ -1505,7 +1632,7 @@ details[open] .acc-icon::before { content: "−"; }
       <details>
         <summary>解約は簡単にできますか？<span class="acc-icon" aria-hidden="true"></span></summary>
         <div class="acc-body"><div class="acc-inner">
-          次回お届け予定日の5日前までに、マイページまたはLINEからお手続きいただけます。回数縛りはないため、初回のお届け後に解約していただくことも可能です。
+          次回お届け予定日の5日前までに、マイページまたはLINEからお手続きいただけます。回数縛りはないため、初回のお届け後に解約していただくことも可能です。2回目以降は ¥3,480 ＋ 送料 ¥550 = ¥4,030（税込）です。
         </div></div>
       </details>
 
@@ -1540,15 +1667,16 @@ details[open] .acc-icon::before { content: "−"; }
         </span>
       </p>
       <p class="price-row"><span>2回目以降</span><span class="val">¥3,480<span class="tax">税込</span></span></p>
-      <p class="price-row"><span>送料</span><span class="val">初回無料</span></p>
+      <p class="price-row"><span>送料</span><span class="val">初回無料 / 2回目以降 ¥550</span></p>
+      <p class="price-note">2回目以降のお支払いは、送料を含めて1回あたり ¥4,030（税込）です。</p>
     </div>
 
     <ul class="badges">
       <li>回数縛りなし</li>
-      <li>5日前まで解約OK</li>
+      <li>次回発送の5日前まで解約OK</li>
     </ul>
 
-    <p class="micro-copy">約1ヶ月分 / 送料無料 / 申し込み1分</p>
+    <p class="micro-copy">約1ヶ月分 / 初回送料無料 / 申し込み1分</p>
     <a href="order.html?plan=subscription" class="btn-main">まず1本、試してみる（定期便）</a>
 
     <a href="order.html?plan=single" class="btn-sub">単品で1本だけ買う ¥3,980</a>
@@ -1608,7 +1736,7 @@ details[open] .acc-icon::before { content: "−"; }
      Sticky Bottom Bar
      ========================================================= -->
 <div class="sticky-bar" inert>
-  <div class="sticky-offer">初回 ¥1,980 / 回数縛りなし</div>
+  <div class="sticky-offer">初回 ¥1,980 / 2回目以降 ¥4,030 / 回数縛りなし</div>
   <div class="sticky-cta">
     <a href="#line" class="s-line"><span class="line-tag">LINE</span>登録</a>
     <a href="order.html?plan=subscription" class="s-main">まず1本、試してみる</a>
@@ -1690,6 +1818,88 @@ if (LINE_URL) {
     bar.toggleAttribute('inert', !show); // 非表示中はフォーカス対象外に
   }, { threshold: 0 });
   observer.observe(hero);
+})();
+
+/* FV スライダー（1枚目＝ブランドムービー / 2枚目＝商品）
+   - 自動送り。ドットのタップとスワイプで切り替えられる
+   - 表示中のスライドの動画だけ再生する（通信量と負荷を抑える）
+   - Hero の音声を再生している間は自動送りを止める（途中で切り替わらないように）
+   - 音声は1枚目のものなので、2枚目に移ったら停止してトグルを隠す */
+(function () {
+  const slider = document.getElementById('heroSlider');
+  const track  = document.getElementById('heroTrack');
+  const dots   = document.getElementById('heroDots');
+  if (!slider || !track || !dots) return;
+
+  const slides  = Array.from(track.querySelectorAll('.hero-slide'));
+  const buttons = Array.from(dots.querySelectorAll('button'));
+  const audio   = document.getElementById('heroAudio');
+  const soundBtn = document.querySelector('.sound-toggle');
+  const reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const AUTO_MS = 7000;
+
+  let index = 0;
+  let timer = null;
+
+  function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
+  function startTimer() {
+    if (reduce || slides.length < 2) return;
+    stopTimer();
+    timer = setInterval(() => {
+      if (audio && !audio.paused) return; // 音声再生中は送らない
+      go(index + 1);
+    }, AUTO_MS);
+  }
+
+  function go(next, byUser) {
+    index = (next + slides.length) % slides.length;
+    track.style.transform = 'translateX(-' + (index * (100 / slides.length)) + '%)';
+
+    buttons.forEach((b, n) => {
+      b.classList.toggle('is-current', n === index);
+      b.setAttribute('aria-selected', String(n === index));
+    });
+    slides.forEach((sl, n) => {
+      sl.setAttribute('aria-hidden', String(n !== index));
+      const v = sl.querySelector('video');
+      if (!v) return;
+      if (n === index) { v.play().catch(() => {}); } else { v.pause(); }
+    });
+
+    if (soundBtn) {
+      // 1枚目を離れるときに鳴っていたら止める
+      if (index !== 0 && soundBtn.getAttribute('aria-pressed') === 'true') soundBtn.click();
+      soundBtn.hidden = (index !== 0);
+    }
+    const section = slider.closest('.hero-section');
+    if (section) section.setAttribute('data-slide', String(index));
+
+    if (byUser) startTimer();
+  }
+
+  buttons.forEach((b, n) => b.addEventListener('click', () => go(n, true)));
+
+  // スワイプ
+  let x0 = null;
+  slider.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; stopTimer(); }, { passive: true });
+  slider.addEventListener('touchend', (e) => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    x0 = null;
+    if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1), true);
+    else startTimer();
+  });
+
+  // 画面外では止める
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) startTimer();
+      else stopTimer();
+    }, { threshold: 0.2 }).observe(slider);
+  }
+
+  go(0);
+  startTimer();
 })();
 
 /* Hero 音声トグル
@@ -1801,6 +2011,9 @@ if (LINE_URL) {
   if (!btn || !video) return;
 
   btn.addEventListener('click', () => {
+    // この動画は音が出るため、HERO の音声が鳴っていたら先に止める
+    const soundBtn = document.querySelector('.sound-toggle');
+    if (soundBtn && soundBtn.getAttribute('aria-pressed') === 'true') soundBtn.click();
     video.currentTime = 0;
     video.play().then(() => { btn.hidden = true; }).catch(() => {});
   });
