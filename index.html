@@ -96,12 +96,11 @@ a:hover, button:hover { opacity: 0.85; }
 .menu-cta:active,
 .menu-line:active,
 .ugc-play:active,
-.btn-line:active,
-.sound-toggle:active { transform: scale(0.98); opacity: 0.9; }
+.btn-line:active { transform: scale(0.98); opacity: 0.9; }
 .btn-main, .btn-sub, .btn-o,
 .s-main, .s-line,
 .menu-cta, .menu-line,
-.ugc-play, .btn-line, .sound-toggle { transition: opacity var(--ease), transform 0.1s ease; }
+.ugc-play, .btn-line { transition: opacity var(--ease), transform 0.1s ease; }
 :focus-visible { outline: 1px solid var(--accent-dark); outline-offset: 3px; }
 
 .visually-hidden {
@@ -277,9 +276,11 @@ main { overflow-x: hidden; }
   top: calc(14px + env(safe-area-inset-top));
   left: 8px; right: 8px;
   z-index: 3;
-  display: flex;
+  /* 右端のアイコンを廃止したため、3列グリッドでロゴを中央に固定する
+     （flex の space-between だと要素が2つになった時点でロゴが右へ寄る） */
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
   align-items: center;
-  justify-content: space-between;
 }
 .hero-btn {
   width: 40px; height: 40px;
@@ -291,6 +292,7 @@ main { overflow-x: hidden; }
   text-shadow: 0 1px 6px rgba(0,0,0,0.35);
 }
 .hero-logo {
+  justify-self: center;
   font-family: var(--serif);
   font-weight: 400;
   font-size: 11px;
@@ -414,26 +416,6 @@ main { overflow-x: hidden; }
   height: 100%;
   flex: none;
 }
-.hero-dots {
-  position: absolute;
-  left: 0; right: 0;
-  bottom: calc(44px + env(safe-area-inset-bottom));
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-.hero-dots button {
-  width: 6px; height: 6px;
-  padding: 0;
-  border-radius: 50%;
-  background: rgba(245,245,245,0.45);
-  transition: background var(--ease), transform var(--ease);
-}
-.hero-dots button.is-current {
-  background: var(--secondary);
-  transform: scale(1.25);
-}
 .slot-video {
   position: absolute;
   inset: 0;
@@ -541,19 +523,6 @@ main { overflow-x: hidden; }
   text-decoration-thickness: 0.5px;
   text-underline-offset: 4px;
 }
-.sound-toggle {
-  position: absolute;
-  right: 16px;
-  bottom: calc(31px + env(safe-area-inset-bottom));
-  z-index: 3;
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.35);
-  color: var(--secondary);
-  display: grid; place-items: center;
-}
-.sound-toggle svg { width: 14px; height: 14px; }
-.sound-toggle svg[hidden] { display: none; }
 .scroll-hint {
   position: absolute;
   left: 50%;
@@ -1288,12 +1257,6 @@ details[open] .acc-icon::before { content: "−"; }
     <div class="hero-top">
       <button class="hero-btn" type="button" id="menuOpen" aria-label="メニューを開く" aria-expanded="false" aria-controls="menuPanel">☰</button>
       <span class="hero-logo">LUMEA SHIFT</span>
-      <a href="#cv" class="hero-btn" aria-label="カートを見る">◐</a>
-    </div>
-
-    <div class="hero-dots" id="heroDots" role="tablist" aria-label="スライドの切り替え">
-      <button type="button" class="is-current" role="tab" aria-selected="true" aria-label="1枚目：ブランドムービー"></button>
-      <button type="button" role="tab" aria-selected="false" aria-label="2枚目：商品"></button>
     </div>
 
     <div class="hero-content">
@@ -1310,12 +1273,6 @@ details[open] .acc-icon::before { content: "−"; }
       </div>
     </div>
 
-    <!-- V1 の音声（動画は無音で書き出し、音声はトグルON時に1回だけ再生） -->
-    <audio id="heroAudio" src="audio/v1-hero.mp3" preload="none"></audio>
-    <button class="sound-toggle" type="button" aria-label="音声をオンにする" aria-pressed="false">
-      <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
-      <svg class="icon-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" hidden><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 8.5a5 5 0 0 1 0 7M19.5 6a8.5 8.5 0 0 1 0 12"/></svg>
-    </button>
     <span class="scroll-hint" aria-hidden="true"></span>
   </section>
 
@@ -1821,20 +1778,14 @@ if (LINE_URL) {
 })();
 
 /* FV スライダー（1枚目＝ブランドムービー / 2枚目＝商品）
-   - 自動送り。ドットのタップとスワイプで切り替えられる
-   - 表示中のスライドの動画だけ再生する（通信量と負荷を抑える）
-   - Hero の音声を再生している間は自動送りを止める（途中で切り替わらないように）
-   - 音声は1枚目のものなので、2枚目に移ったら停止してトグルを隠す */
+   - 自動送り。スワイプでも切り替えられる
+   - 表示中のスライドの動画だけ再生する（通信量と負荷を抑える） */
 (function () {
   const slider = document.getElementById('heroSlider');
   const track  = document.getElementById('heroTrack');
-  const dots   = document.getElementById('heroDots');
-  if (!slider || !track || !dots) return;
+  if (!slider || !track) return;
 
   const slides  = Array.from(track.querySelectorAll('.hero-slide'));
-  const buttons = Array.from(dots.querySelectorAll('button'));
-  const audio   = document.getElementById('heroAudio');
-  const soundBtn = document.querySelector('.sound-toggle');
   const reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const AUTO_MS = 7000;
 
@@ -1845,20 +1796,13 @@ if (LINE_URL) {
   function startTimer() {
     if (reduce || slides.length < 2) return;
     stopTimer();
-    timer = setInterval(() => {
-      if (audio && !audio.paused) return; // 音声再生中は送らない
-      go(index + 1);
-    }, AUTO_MS);
+    timer = setInterval(() => { go(index + 1); }, AUTO_MS);
   }
 
   function go(next, byUser) {
     index = (next + slides.length) % slides.length;
     track.style.transform = 'translateX(-' + (index * (100 / slides.length)) + '%)';
 
-    buttons.forEach((b, n) => {
-      b.classList.toggle('is-current', n === index);
-      b.setAttribute('aria-selected', String(n === index));
-    });
     slides.forEach((sl, n) => {
       sl.setAttribute('aria-hidden', String(n !== index));
       const v = sl.querySelector('video');
@@ -1866,18 +1810,11 @@ if (LINE_URL) {
       if (n === index) { v.play().catch(() => {}); } else { v.pause(); }
     });
 
-    if (soundBtn) {
-      // 1枚目を離れるときに鳴っていたら止める
-      if (index !== 0 && soundBtn.getAttribute('aria-pressed') === 'true') soundBtn.click();
-      soundBtn.hidden = (index !== 0);
-    }
     const section = slider.closest('.hero-section');
     if (section) section.setAttribute('data-slide', String(index));
 
     if (byUser) startTimer();
   }
-
-  buttons.forEach((b, n) => b.addEventListener('click', () => go(n, true)));
 
   // スワイプ
   let x0 = null;
@@ -1900,83 +1837,6 @@ if (LINE_URL) {
 
   go(0);
   startTimer();
-})();
-
-/* Hero 音声トグル
-   - 動画は常に無音でループ。音声は別ファイルを1回だけ再生（ループで同じセリフが繰り返されないように）
-   - ON にすると動画を頭出しし、その頭出しが完了してから音声を開始する（先に音を出すとずれる）
-   - 再生中は動画の再生位置を基準に音声を補正し、ずれが 0.1 秒を超えたら合わせ直す
-   - 再生が終わったら自動で OFF 表示に戻る */
-(function () {
-  const btn = document.querySelector('.sound-toggle');
-  const audio = document.getElementById('heroAudio');
-  if (!btn || !audio) return;
-  const video = document.querySelector('.hero-video');
-  let syncTimer = null;
-
-  function setState(on) {
-    btn.setAttribute('aria-pressed', String(on));
-    btn.setAttribute('aria-label', on ? '音声をオフにする' : '音声をオンにする');
-    btn.querySelector('.icon-muted').hidden = on;
-    btn.querySelector('.icon-sound').hidden = !on;
-  }
-
-  // 動画を先頭に戻し、実際に戻り終わるまで待つ
-  function rewindVideo() {
-    return new Promise((resolve) => {
-      if (!video) { resolve(); return; }
-      if (video.readyState === 0) { resolve(); return; }
-      if (video.currentTime < 0.05) { resolve(); return; }
-      const done = () => { video.removeEventListener('seeked', done); resolve(); };
-      video.addEventListener('seeked', done);
-      setTimeout(done, 400); // seeked が来ない環境への保険
-      video.currentTime = 0;
-    });
-  }
-
-  function startSync() {
-    stopSync();
-    if (!video) return;
-    syncTimer = setInterval(() => {
-      if (audio.paused || video.paused) return;
-      const gap = video.currentTime - audio.currentTime;
-      if (Math.abs(gap) > 0.1 && Math.abs(gap) < 3) audio.currentTime = video.currentTime;
-    }, 500);
-  }
-  function stopSync() {
-    if (syncTimer) { clearInterval(syncTimer); syncTimer = null; }
-  }
-
-  function stop() {
-    audio.pause();
-    stopSync();
-    setState(false);
-  }
-
-  btn.addEventListener('click', async () => {
-    const on = btn.getAttribute('aria-pressed') !== 'true';
-    if (!on) { stop(); return; }
-    try {
-      await rewindVideo();
-      if (video) await video.play().catch(() => {});
-      audio.currentTime = 0;
-      await audio.play();
-      setState(true);
-      startSync();
-    } catch (e) {
-      stop(); // 再生できなかった場合は OFF のまま
-    }
-  });
-
-  audio.addEventListener('ended', stop);
-
-  // Hero が画面外に出たら止める
-  const hero = document.querySelector('.hero-section');
-  if (hero && 'IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting && !audio.paused) stop();
-    }, { threshold: 0.2 }).observe(hero);
-  }
 })();
 
 /* 1回だけ再生する動画（指でなじませる動き。ループすると巻き戻って不自然になるため）
@@ -2011,9 +1871,6 @@ if (LINE_URL) {
   if (!btn || !video) return;
 
   btn.addEventListener('click', () => {
-    // この動画は音が出るため、HERO の音声が鳴っていたら先に止める
-    const soundBtn = document.querySelector('.sound-toggle');
-    if (soundBtn && soundBtn.getAttribute('aria-pressed') === 'true') soundBtn.click();
     video.currentTime = 0;
     video.play().then(() => { btn.hidden = true; }).catch(() => {});
   });
